@@ -1,0 +1,3891 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GramCare Presentation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@700;800&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* Base styles */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #0b1120 0%, #111827 100%);
+            color: #ffffff;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+        }
+
+        /* Slide container */
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(0);
+            transition: opacity 0.8s ease, visibility 0.8s, transform 0.8s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .slide.leaving-fade {
+            opacity: 0 !important;
+            transform: translateY(-20px) !important;
+        }
+
+        /* Layout Utilities */
+        .slide-content {
+            width: 85%;
+            max-width: 1400px;
+            height: 80%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .grid { display: grid; }
+        .grid-2-col { grid-template-columns: 1fr 1fr; gap: 4rem; height: 100%; align-items: center; }
+        .flex { display: flex; }
+        
+        /* General Slide Styling */
+        .slide-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: #f9fafb;
+            letter-spacing: -1px;
+        }
+        .slide-subtitle {
+            font-size: 1.5rem;
+            color: #9ca3af;
+            margin-bottom: 2.5rem;
+            font-weight: 400;
+        }
+        
+        /* Helpers */
+        .text-green { color: #10B981; }
+
+        /* Start Screen */
+        .start-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 6.5rem;
+            font-weight: 900;
+            color: #ffffff;
+            margin-bottom: 2.5rem;
+            text-shadow: 0 0 60px rgba(16, 185, 129, 0.4);
+            letter-spacing: 2px;
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        .slide.active .start-title {
+            animation: scaleInFade 2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+
+        .start-btn {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.05));
+            border: 1px solid rgba(16, 185, 129, 0.8);
+            color: #ffffff;
+            font-family: 'Sora', sans-serif;
+            font-size: 1.4rem;
+            font-weight: 700;
+            padding: 1.2rem 3.5rem;
+            border-radius: 50px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+            box-shadow: 0 0 30px rgba(16, 185, 129, 0.3), inset 0 0 15px rgba(16, 185, 129, 0.2);
+            opacity: 0;
+            transform: translateY(20px);
+            backdrop-filter: blur(10px);
+            pointer-events: auto;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .slide.active .start-btn {
+            animation: fadeUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            animation-delay: 1.2s;
+        }
+
+        .start-btn:hover {
+            background: rgba(16, 185, 129, 0.35);
+            box-shadow: 0 0 50px rgba(16, 185, 129, 0.6), inset 0 0 20px rgba(16, 185, 129, 0.4);
+            border-color: #10B981;
+            transform: translateY(-4px) scale(1.05);
+        }
+
+        .start-btn svg {
+            fill: none;
+            stroke: #ffffff;
+            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .start-btn:hover svg {
+            transform: translateX(6px) scale(1.1);
+        }
+
+        @keyframes scaleInFade {
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Cinematic Intro Slide */
+        .cinematic-text {
+            font-family: 'Sora', 'Inter', sans-serif;
+            font-size: 4.5rem;
+            font-weight: 800;
+            color: #ffffff;
+            text-align: center;
+            text-transform: uppercase;
+            opacity: 0;
+            text-shadow: 0 0 40px rgba(255, 255, 255, 0.2);
+        }
+
+        .slide.active .cinematic-text {
+            animation: cinematicResolve 2.0s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            animation-delay: 3s;
+        }
+
+        @keyframes cinematicResolve {
+            0% {
+                opacity: 0;
+                filter: blur(12px);
+                transform: scale(1.1);
+                letter-spacing: 0.3em;
+            }
+            100% {
+                opacity: 1;
+                filter: blur(0);
+                transform: scale(1);
+                letter-spacing: 0.05em;
+            }
+        }
+
+        /* ================================
+           Slide 1: Floating Insights Cinematic Layout
+           ================================ */
+        
+        .problem-layout {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            gap: 4rem;
+        }
+        .problem-left {
+            flex: 6.5;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            padding-top: 5rem;
+        }
+        .problem-right {
+            flex: 3.5;
+            display: flex;
+            flex-direction: column;
+            gap: 4rem;
+            justify-content: center;
+        }
+
+        /* Title Animation */
+        .problem-title-area {
+            position: absolute; top: 0; left: 0; z-index: 10;
+        }
+        .problem-headline {
+            font-size: 3.5rem; font-weight: 900; margin: 0; font-family: 'Sora', sans-serif;
+            opacity: 0; filter: blur(10px); letter-spacing: 5px;
+        }
+        .accent-line-left {
+            width: 60px; height: 4px; background: #10B981; margin-top: 10px; border-radius: 2px;
+            opacity: 0; transform: scaleX(0); transform-origin: left;
+        }
+        .slide.active .problem-headline {
+            animation: titleCinematic 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            animation-delay: 0.2s;
+        }
+        .slide.active .accent-line-left {
+            animation: drawLine 1s ease forwards;
+            animation-delay: 0.8s;
+        }
+
+        @keyframes titleCinematic {
+            from { opacity: 0; filter: blur(10px); letter-spacing: 5px; transform: translateY(10px); }
+            to { opacity: 1; filter: blur(0); letter-spacing: 1px; transform: translateY(0); }
+        }
+        @keyframes titleCinematicOut {
+            from { opacity: 1; filter: blur(0); letter-spacing: 1px; transform: translateY(0); }
+            to { opacity: 0; filter: blur(10px); letter-spacing: 5px; transform: translateY(-10px); }
+        }
+
+        .cinematic-title {
+            opacity: 0;
+            filter: blur(10px);
+            letter-spacing: 5px;
+        }
+        .slide.active .cinematic-title {
+            animation: titleCinematic 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            animation-delay: 0.2s;
+        }
+        .slide.leaving-fade .cinematic-title {
+            animation: titleCinematicOut 0.8s ease forwards !important;
+        }
+        @keyframes drawLine {
+            to { opacity: 1; transform: scaleX(1); }
+        }
+
+        /* Scene Base */
+        .road-scene {
+            position: absolute;
+            top: 5rem; bottom: 0; left: 0; right: 0;
+            background: radial-gradient(ellipse at center, rgba(10,15,28,0) 40%, rgba(10,15,28,1) 100%);
+            z-index: 1;
+        }
+        .winding-road {
+            width: 100%; height: 100%;
+            overflow: visible;
+        }
+        .road-draw {
+            stroke-dasharray: 1500; stroke-dashoffset: 1500;
+        }
+        .slide.active .road-draw {
+            animation: drawRoad 2.5s ease-in-out forwards;
+            animation-delay: 1.0s;
+        }
+        @keyframes drawRoad { to { stroke-dashoffset: 0; } }
+
+        .vehicle-dot { opacity: 0; }
+        .slide.active .vehicle-dot {
+            animation: fadeIn 0.5s forwards;
+            animation-delay: 3.5s;
+        }
+        
+        /* Nodes */
+        .scene-node {
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 0.8rem;
+            opacity: 0;
+            width: 220px;
+            transform: translate(-50%, -50%) scale(0.9);
+            z-index: 2;
+        }
+        
+        .img-wrapper {
+            width: 130px;
+            filter: drop-shadow(0 0 30px rgba(16,185,129,0.25));
+        }
+        .img-wrapper img {
+            width: 100%; height: auto;
+            border-radius: 8px;
+        }
+        .hospital-img-wrapper {
+            width: 180px;
+            filter: drop-shadow(0 0 30px rgba(239,68,68,0.25));
+        }
+        .hospital-img-wrapper img {
+            width: 100%; height: auto;
+            border-radius: 8px;
+        }
+
+        .village-node { top: 18.75%; left: 25%; }
+        .hospital-node { top: 81.25%; left: 25%; }
+        
+        .delay-label {
+            top: 50%; left: 60%;
+            flex-direction: row; align-items: center; text-align: left;
+            width: max-content;
+            background: linear-gradient(90deg, rgba(16,185,129,0.05) 0%, transparent 100%);
+            padding: 0.8rem 1.5rem;
+            border-left: 2px solid rgba(16,185,129,0.6);
+            border-radius: 4px;
+            backdrop-filter: blur(5px);
+            transform: translate(0, -50%) scale(0.9);
+        }
+        
+        .node-text h4 { margin: 0; font-size: 1.15rem; font-weight: 800; letter-spacing: 0.5px; text-shadow: 0 4px 15px rgba(0,0,0,0.8); }
+        .node-text p { margin: 0; font-size: 0.95rem; color: #cbd5e1; line-height: 1.4; margin-top: 4px; text-shadow: 0 2px 8px rgba(0,0,0,0.8); }
+        .text-red { color: #EF4444; }
+
+        .slide.active .village-node { animation: popInNode 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 2.0s; }
+        .slide.active .hospital-node { animation: popInNode 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 2.3s; }
+        .slide.active .delay-label { animation: popInLabel 1s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 3.0s; }
+
+        /* Insight Cards (Right Side) */
+        .problem-right {
+            flex: 3.5;
+            display: flex;
+            flex-direction: column;
+            gap: 2.5rem;
+            justify-content: center;
+            padding-right: 2rem;
+        }
+
+        .insight-card {
+            background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0.01) 100%);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+        }
+        .insight-top-card { border-left: 4px solid #10B981; }
+        .insight-bottom-card { border-left: 4px solid #EF4444; }
+
+        .chair-visual-floating {
+            width: 60px; height: 60px;
+            margin-bottom: 1rem;
+        }
+        .chair-visual-floating svg { width: 100%; height: 100%; filter: drop-shadow(0 0 15px rgba(16,185,129,0.3)); }
+        
+        .stat-highlight-floating {
+            font-family: 'Sora', sans-serif;
+            font-size: 5.5rem;
+            font-weight: 900;
+            color: #10B981;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            letter-spacing: -2px;
+            text-shadow: 0 0 30px rgba(16, 185, 129, 0.2);
+        }
+        .stat-text-floating {
+            font-size: 1.15rem;
+            color: #f8fafc;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .slide.active .insight-top-card { animation: floatUp 1s ease forwards; animation-delay: 2.5s; }
+        .slide.active .insight-bottom-card { animation: floatUp 1s ease forwards; animation-delay: 2.8s; }
+
+        .papers-bg-floating {
+            position: absolute; top: 0; right: 0;
+            width: 140px; height: 140px;
+            pointer-events: none; z-index: 0;
+            opacity: 0.08;
+        }
+        .papers-bg-floating svg {
+            position: absolute;
+            color: #EF4444;
+        }
+
+        .insight-title {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #EF4444;
+            margin: 0 0 1.5rem 0;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            position: relative; z-index: 1;
+        }
+
+        .floating-list {
+            list-style: none; padding: 0; margin: 0;
+            display: flex; flex-direction: column; gap: 1.2rem;
+            position: relative; z-index: 1;
+        }
+        .floating-item {
+            display: flex; align-items: center; gap: 1.2rem;
+            font-size: 1.15rem; color: #cbd5e1;
+        }
+        .floating-item svg { width: 24px; height: 24px; color: #EF4444; filter: drop-shadow(0 0 10px rgba(239,68,68,0.4)); }
+
+        @keyframes rotateFloatIn { to { opacity: 1; transform: rotate(0deg) translateY(0); } }
+        @keyframes popInNode { to { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+        @keyframes popInLabel { to { opacity: 1; transform: translate(0, -50%) scale(1); } }
+        @keyframes floatUp { to { opacity: 1; transform: translateY(0); } }
+        @keyframes scaleIn { to { opacity: 1; transform: scale(1); } }
+        @keyframes slideInIssue { to { opacity: 1; transform: translateX(0); } }
+        @keyframes fadeIn { to { opacity: 1; } }
+        /* ================================
+           Slide 2: Brand Reveal
+           ================================ */
+        .brand-reveal-layout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            position: relative;
+            padding-bottom: 12vh;
+        }
+        
+        .brand-reveal-bg {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(10, 15, 28, 0.7);
+            backdrop-filter: blur(3px);
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 1s ease;
+        }
+        .slide.active .brand-reveal-bg {
+            opacity: 1;
+        }
+
+        .brand-logo-container {
+            position: relative;
+            z-index: 1;
+            margin-bottom: 0rem;
+            background: radial-gradient(circle at center, rgba(16,185,129,0.12) 0%, transparent 60%);
+            padding: 2rem;
+            border-radius: 50%;
+            
+            opacity: 0;
+            transform: translateY(80px) scale(0.95);
+        }
+        .brand-logo-container img {
+            width: 320px;
+            height: auto;
+            display: block;
+        }
+
+        .brand-name-text {
+            font-family: 'Sora', sans-serif;
+            font-size: 5.5rem;
+            font-weight: 900;
+            letter-spacing: -2px;
+            margin: 0;
+            z-index: 1;
+            
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        .slide.active .brand-logo-container {
+            animation: revealLogo 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            animation-delay: 0.3s;
+        }
+        
+        .slide.active .brand-name-text {
+            animation: floatUpBrand 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            animation-delay: 0.6s;
+        }
+
+        @keyframes revealLogo {
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes floatUpBrand {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ================================
+           Slide 3: Introduction (System Flow)
+           ================================ */
+        /* Instantly hide Slide 2 elements when leaving to prevent ghosting */
+        #slide-brand-reveal.leaving-fade .brand-logo-container,
+        #slide-brand-reveal.leaving-fade .brand-name-text {
+            opacity: 0 !important;
+            transition: none !important;
+            animation: none !important;
+        }
+
+        #slide-intro {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            height: 100%;
+            position: relative;
+        }
+
+        /* Fake Background for Transition */
+        .intro-bg-fade {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(10, 15, 28, 0.7);
+            backdrop-filter: blur(3px);
+            z-index: 0;
+            opacity: 1;
+        }
+        #slide-intro.active .intro-bg-fade {
+            animation: fadeOutBg 1s ease forwards;
+            animation-delay: 0.2s;
+        }
+        @keyframes fadeOutBg { to { opacity: 0; } }
+
+        /* Transforming Header */
+        .intro-header-wrapper {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* Start exactly where Slide 2 ended */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, calc(-50% - 12vh)); /* Accounting for padding-bottom: 12vh of slide 2 */
+        }
+        
+        .brand-logo-container-small {
+            margin-bottom: 0rem;
+            background: radial-gradient(circle at center, rgba(16,185,129,0.12) 0%, transparent 60%);
+            padding: 2rem;
+            border-radius: 50%;
+        }
+        .brand-logo-container-small img {
+            width: 320px;
+            height: auto;
+            display: block;
+        }
+        .brand-name-text-small {
+            font-family: 'Sora', sans-serif;
+            font-size: 5.5rem;
+            font-weight: 900;
+            letter-spacing: -2px;
+            margin: 0;
+        }
+
+        .header-underline {
+            width: 0;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #10B981, transparent);
+            margin-top: 1.5rem;
+            opacity: 0;
+        }
+
+        /* The Transformation Animation */
+        #slide-intro.active .intro-header-wrapper {
+            animation: transformToHeader 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+        #slide-intro.active .header-underline {
+            animation: drawUnderline 0.8s ease forwards;
+            animation-delay: 0.8s;
+        }
+
+        @keyframes transformToHeader {
+            to {
+                transform: translate(-50%, calc(-50% - 38vh)) scale(0.45);
+            }
+        }
+        @keyframes drawUnderline {
+            to { width: 300px; opacity: 1; }
+        }
+
+        /* Text Introduction */
+        .intro-text-block {
+            position: absolute;
+            top: 28%;
+            left: 50%;
+            transform: translate(-50%, 0);
+            width: 92%;
+            max-width: 1500px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1.45rem;
+            line-height: 1.8;
+            color: #cbd5e1;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+        .intro-text-block p {
+            margin: 0;
+            opacity: 0;
+        }
+        .intro-text-block .highlight-green {
+            color: #10B981;
+            font-weight: 700;
+        }
+        .intro-text-block .highlight-blue {
+            color: #3B82F6;
+            font-weight: 700;
+        }
+        #slide-intro.active .intro-text-block p:nth-child(1) {
+            animation: floatUpText 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            animation-delay: 1.0s;
+        }
+        #slide-intro.active .intro-text-block p:nth-child(2) {
+            animation: floatUpText 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            animation-delay: 1.3s;
+        }
+        @keyframes floatUpText {
+            from { opacity: 0; transform: translateY(40px) scale(0.98); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+
+        /* Connection Visual at Bottom of Slide 2 */
+        .intro-connection-visual {
+            position: absolute;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            max-width: 1000px;
+            height: 150px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            opacity: 0;
+            z-index: 1;
+        }
+
+        #slide-intro.active .intro-connection-visual {
+            animation: fadeInConnection 1s ease forwards;
+            animation-delay: 1.8s;
+        }
+        @keyframes fadeInConnection { to { opacity: 1; } }
+
+        .connection-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 2;
+            width: 150px;
+        }
+
+        .connection-icon-wrapper {
+            width: 60px; height: 60px;
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 1rem;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.05);
+            position: relative;
+        }
+
+        .node-urban .connection-icon-wrapper { box-shadow: 0 0 25px rgba(59,130,246,0.2); border-color: rgba(59,130,246,0.3); }
+        .node-rural .connection-icon-wrapper { box-shadow: 0 0 25px rgba(16,185,129,0.2); border-color: rgba(16,185,129,0.3); }
+
+        .connection-icon-wrapper svg {
+            width: 30px; height: 30px;
+        }
+
+        .connection-label {
+            font-family: 'Sora', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+        .label-blue { color: #3B82F6; text-shadow: 0 0 10px rgba(59,130,246,0.5); }
+        .label-green { color: #10B981; text-shadow: 0 0 10px rgba(16,185,129,0.5); }
+
+        .connection-bridge {
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .bridge-svg {
+            position: absolute;
+            bottom: 40px; /* Align with icons */
+            left: 10%;
+            width: 80%;
+            height: 100px;
+            overflow: visible;
+        }
+
+        .bridge-path-bg {
+            stroke: rgba(255, 255, 255, 0.05);
+            stroke-width: 3;
+            fill: none;
+            stroke-dasharray: 8 8;
+        }
+
+        .bridge-path-draw {
+            stroke: #10B981;
+            stroke-width: 3;
+            fill: none;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            filter: drop-shadow(0 0 8px rgba(16,185,129,0.6));
+        }
+
+        #slide-intro.active .bridge-path-draw {
+            animation: drawBridge 2.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            animation-delay: 2.2s;
+        }
+        @keyframes drawBridge { to { stroke-dashoffset: 0; } }
+
+        .bridge-center-label {
+            position: absolute;
+            top: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Sora', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            color: #f8fafc;
+            opacity: 0;
+            filter: drop-shadow(0 2px 10px rgba(16,185,129,0.8));
+        }
+
+        #slide-intro.active .bridge-center-label {
+            animation: fadeInBridgeText 1s ease forwards;
+            animation-delay: 3.5s;
+        }
+        @keyframes fadeInBridgeText {
+            from { opacity: 0; transform: translate(-50%, 10px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+
+        #slide-3 .slide-title {
+            opacity: 0; filter: blur(10px); letter-spacing: 5px;
+            font-size: 4.5rem;
+            font-weight: 900;
+            margin: 0;
+            text-align: center;
+        }
+        .slide.active#slide-3 .slide-title {
+            animation: titleCinematic 1.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            animation-delay: 0s;
+        }
+        
+        #slide-3.leaving-fade .slide-title {
+            animation: titleCinematicOut 0.8s cubic-bezier(0.8, 0, 0.2, 1) forwards !important;
+        }
+        @keyframes titleCinematicOut {
+            from { opacity: 1; filter: blur(0); letter-spacing: 5px; transform: scale(1); }
+            to { opacity: 0; filter: blur(10px); letter-spacing: 15px; transform: scale(1.1); }
+        }
+
+        #slide-5 .slide-title {
+            opacity: 0; filter: blur(10px); letter-spacing: 5px;
+            font-size: 4.5rem;
+            font-weight: 900;
+            margin: 0;
+            text-align: center;
+        }
+        .slide.active#slide-5 .slide-title {
+            animation: titleCinematic 2.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            animation-delay: 1s;
+        }
+        #slide-5.leaving-fade .slide-title {
+            animation: titleCinematicOut 1s cubic-bezier(0.8, 0, 0.2, 1) forwards !important;
+        }
+
+        /* 5-Step Workflow Diagram */
+        .workflow-timeline {
+            position: relative;
+            width: 100%;
+            height: 70vh;
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .timeline-center-line {
+            position: absolute;
+            top: 0; bottom: 0; left: 50%;
+            width: 4px;
+            background: rgba(255, 255, 255, 0.05);
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+        .timeline-draw-line {
+            position: absolute;
+            top: 0; left: 50%;
+            width: 4px;
+            background: linear-gradient(to bottom, #10B981, #3B82F6, #10B981);
+            transform: translateX(-50%);
+            z-index: 2;
+            height: 0%;
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.6);
+        }
+        .slide.active#slide-4 .timeline-draw-line {
+            animation: drawTimeline 4s linear forwards;
+            animation-delay: 0.5s;
+        }
+        @keyframes drawTimeline {
+            to { height: 100%; }
+        }
+
+        .timeline-loop-dot {
+            position: absolute;
+            top: 0; left: 50%;
+            width: 8px; height: 8px;
+            background: #ffffff;
+            border-radius: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 10px #ffffff, 0 0 20px #10B981;
+            z-index: 2; /* Below steps (z-index 3) and icons (z-index 4) */
+            opacity: 0;
+        }
+        .slide.active#slide-4 .timeline-loop-dot {
+            animation: loopDotTravel 3s linear infinite;
+            animation-delay: 4.5s;
+        }
+        @keyframes loopDotTravel {
+            0% { top: 0; opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+
+        .timeline-step {
+            position: relative;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 3;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        .slide.active#slide-4 .timeline-step {
+            animation: fadeUpStep 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+        /* Delays for each step based on timeline draw */
+        .slide.active#slide-4 .step-1 { animation-delay: 0.5s; }
+        .slide.active#slide-4 .step-2 { animation-delay: 1.3s; }
+        .slide.active#slide-4 .step-3 { animation-delay: 2.1s; }
+        .slide.active#slide-4 .step-4 { animation-delay: 2.9s; }
+        .slide.active#slide-4 .step-5 { animation-delay: 3.7s; }
+
+        @keyframes fadeUpStep {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-content {
+            width: 42%;
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            backdrop-filter: blur(10px);
+            position: relative;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .step-content:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+            border-color: rgba(59, 130, 246, 0.3);
+        }
+        .step-content h3 {
+            font-size: 1.2rem; color: #f8fafc; margin: 0 0 0.5rem 0; font-family: 'Sora', sans-serif;
+            letter-spacing: 1px;
+        }
+        .step-content p {
+            font-size: 0.95rem; color: #9ca3af; margin: 0; line-height: 1.5;
+        }
+        
+        .step-left .step-content { text-align: right; }
+        .step-right .step-content { text-align: left; }
+        .step-empty { width: 42%; }
+
+        .step-icon-wrapper {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 44px; height: 44px;
+            background: #0f172a;
+            border: 2px solid #3B82F6;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 0 0 4px rgba(10, 15, 28, 1), 0 0 15px rgba(59, 130, 246, 0.4);
+            z-index: 4;
+            transition: all 0.3s ease;
+        }
+        .step-icon-wrapper svg { width: 20px; height: 20px; stroke: #3B82F6; }
+
+        /* Step colors for variety */
+        .step-1 .step-icon-wrapper { border-color: #10B981; box-shadow: 0 0 0 4px rgba(10, 15, 28, 1), 0 0 15px rgba(16, 185, 129, 0.4); }
+        .step-1 .step-icon-wrapper svg { stroke: #10B981; }
+        .step-1 .step-content h3 { color: #10B981; }
+
+        .step-3 .step-icon-wrapper { border-color: #8B5CF6; box-shadow: 0 0 0 4px rgba(10, 15, 28, 1), 0 0 15px rgba(139, 92, 246, 0.4); }
+        .step-3 .step-icon-wrapper svg { stroke: #8B5CF6; }
+        .step-3 .step-content h3 { color: #8B5CF6; }
+
+        .step-5 .step-icon-wrapper { border-color: #10B981; box-shadow: 0 0 0 4px rgba(10, 15, 28, 1), 0 0 15px rgba(16, 185, 129, 0.4); }
+        .step-5 .step-icon-wrapper svg { stroke: #10B981; }
+        .step-5 .step-content h3 { color: #10B981; }
+
+        /* ================================================
+           IMPACT & BENEFITS - GRID SYSTEM (imp3)
+        ================================================ */
+        #slide-6 { overflow: hidden; background: #0A0F1C; }
+        .imp3-wrapper {
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            padding: 2.5rem 3rem;
+            box-sizing: border-box;
+            position: relative;
+            z-index: 2;
+        }
+        .imp3-header { flex-shrink: 0; margin-bottom: 0.5rem; text-align: center; }
+        .imp3-title { font-family: 'Sora', sans-serif; font-size: 2.2rem; font-weight: 800; color: #fff; margin: 0; line-height: 1.2; }
+        .imp3-title span { color: #10B981; }
+
+        .imp3-body {
+            flex: 1; width: 100%; position: relative;
+            margin-top: 2rem;
+        }
+
+        /* Background Element */
+        .imp3-bg-glow {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 700px; height: 700px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(16,185,129,0.06) 0%, rgba(10,15,28,0) 60%);
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* SVG Lines */
+        .imp3-svg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; overflow: visible;
+        }
+        .imp3-line-base {
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+        }
+        .imp3-line-flow {
+            stroke-dasharray: 2 4;
+            stroke-dashoffset: 0;
+            opacity: 0;
+        }
+
+        /* Nodes Base */
+        .imp3-node {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+
+        /* Center Hub */
+        .imp3-center {
+            top: 50%; left: 50%;
+            width: 170px; height: 170px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05)), #0A0F1C;
+            border: 2px solid rgba(16,185,129,0.8);
+            box-shadow: 0 0 40px rgba(16,185,129,0.3), inset 0 0 20px rgba(16,185,129,0.2);
+            display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;
+            opacity: 0; /* for animation */
+        }
+        .imp3-center-main { font-weight: 800; font-size: 1.15rem; color: #fff; line-height: 1.2; letter-spacing: 1px; }
+        .imp3-center-sub { font-size: 0.7rem; color: #10B981; text-transform: uppercase; letter-spacing: 2px; margin-top: 6px; font-weight: 700; }
+
+        /* Clusters */
+        .imp3-card {
+            width: 250px;
+            padding: 1.2rem;
+            border-radius: 16px;
+            background: linear-gradient(rgba(10,15,28,0.9), rgba(10,15,28,0.9)), #0A0F1C;
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            opacity: 0;
+            display: flex; flex-direction: column;
+        }
+
+        /* Positioning */
+        .imp3-top-left { top: 22%; left: 25%; }
+        .imp3-top-right { top: 22%; left: 75%; }
+        .imp3-mid-left { top: 50%; left: 15%; }
+        .imp3-mid-right { top: 50%; left: 85%; }
+        .imp3-bot-left { top: 78%; left: 25%; }
+        .imp3-bot-right { top: 78%; left: 75%; }
+
+        /* Card Content */
+        .imp3-card-title {
+            font-family: 'Sora', sans-serif; font-size: 1rem; font-weight: 800; color: #f8fafc;
+            margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .imp3-card-title::before {
+            content: ''; width: 8px; height: 8px; border-radius: 50%; background: #10B981; box-shadow: 0 0 6px #10B981; flex-shrink: 0;
+        }
+        .imp3-card-desc {
+            font-size: 0.85rem; color: #cbd5e1; line-height: 1.4; margin-bottom: 0.8rem; font-weight: 500;
+        }
+        .imp3-card-tag {
+            font-size: 0.65rem; color: rgba(16,185,129,0.8); text-transform: uppercase; letter-spacing: 1px;
+            padding-top: 0.6rem; border-top: 1px solid rgba(255,255,255,0.08); font-weight: 700;
+        }
+
+        /* Animations */
+        @keyframes imp3PopIn { 0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); } 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); } }
+        @keyframes imp3Pulse { 0% { box-shadow: 0 0 30px rgba(16,185,129,0.3); } 50% { box-shadow: 0 0 50px rgba(16,185,129,0.5); transform: translate(-50%, -50%) scale(1.02); } 100% { box-shadow: 0 0 30px rgba(16,185,129,0.3); transform: translate(-50%, -50%) scale(1); } }
+        @keyframes imp3DrawLine { to { stroke-dashoffset: 0; } }
+        @keyframes imp3Flow { to { stroke-dashoffset: -6; } }
+        @keyframes imp3FadeUp { from { opacity: 0; transform: translate(-50%, calc(-50% + 20px)); } to { opacity: 1; transform: translate(-50%, -50%); } }
+
+        #slide-6.active .imp3-header { animation: fadeIn 0.5s forwards 0.2s; opacity: 0; }
+        #slide-6.active .imp3-center { animation: imp3PopIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards 0.4s, imp3Pulse 3s infinite ease-in-out 1s; }
+        
+        #slide-6.active .imp3-line-base { animation: imp3DrawLine 0.8s ease-out forwards 0.8s; }
+        #slide-6.active .imp3-line-flow { animation: fadeIn 0.5s forwards 1.6s, imp3Flow 1s linear infinite; }
+
+        #slide-6.active .imp3-top-left { animation: imp3FadeUp 0.5s forwards 1.1s; }
+        #slide-6.active .imp3-top-right { animation: imp3FadeUp 0.5s forwards 1.2s; }
+        #slide-6.active .imp3-mid-right { animation: imp3FadeUp 0.5s forwards 1.3s; }
+        #slide-6.active .imp3-bot-right { animation: imp3FadeUp 0.5s forwards 1.4s; }
+        #slide-6.active .imp3-bot-left { animation: imp3FadeUp 0.5s forwards 1.5s; }
+        #slide-6.active .imp3-mid-left { animation: imp3FadeUp 0.5s forwards 1.6s; }
+
+        /* Aurora Container */
+        #aurora-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Behind content */
+            pointer-events: none;
+            opacity: 1;
+        }
+
+        /* ================================================
+           UNIQUENESS SLIDE — LAYOUT FIXES
+        ================================================ */
+        #slide-uniqueness {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* FIX 2: Centered max-width container */
+        .uq-wrap {
+            width: 100%;
+            max-width: 1200px;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem 3rem 1.5rem;
+            box-sizing: border-box;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* FIX 1: Title — no blur, z-index 10 */
+        .uq-title {
+            text-align: center;
+            flex-shrink: 0;
+            opacity: 0;
+            width: 100%;
+            z-index: 10;
+            position: relative;
+            filter: none !important;
+        }
+        .uq-title h1 {
+            font-family: 'Sora', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin: 0;
+            color: #fff;
+            filter: none !important;
+        }
+        .uq-title-line {
+            width: 220px;
+            height: 2px;
+            background: linear-gradient(to right, transparent, #10B981, #3B82F6, transparent);
+            margin: 0.5rem auto 0;
+            box-shadow: 0 0 12px rgba(16,185,129,0.5);
+        }
+
+        /* FIX 3: Comparison — strict flex, 40%|20%|40% */
+        .uq-comparison {
+            flex: 1;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 0;
+            margin-top: 1.2rem;
+        }
+
+        /* LEFT column — RED THEME */
+        .uq-left {
+            width: 40%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 1.1rem;
+            padding-right: 2rem;
+            opacity: 0;
+            flex-shrink: 0;
+        }
+        .uq-left-header {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #ef4444;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 14px rgba(239,68,68,0.3);
+        }
+        .uq-left .uq-item {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+        }
+        .uq-left .uq-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(239,68,68,0.08);
+            border: 1px solid rgba(239,68,68,0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .uq-left .uq-text {
+            font-size: 0.95rem;
+            color: #fca5a5;
+            font-weight: 500;
+        }
+
+        /* FIX 4: CENTER divider — fixed height, locked VS */
+        .uq-center {
+            width: 20%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            flex-shrink: 0;
+            height: 300px;
+        }
+        .uq-divider {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%) scaleY(0);
+            transform-origin: top center;
+            width: 2px;
+            background: linear-gradient(to bottom, #10B981 70%, transparent);
+            /* NO blur — must be visible */
+        }
+        /* FIX 4: VS — NO movement, only fade in */
+        .uq-vs {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #0A0F1C;
+            border: 2px solid #10B981;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            font-size: 1.1rem;
+            color: #10B981;
+            box-shadow: 0 0 18px rgba(16,185,129,0.45);
+            opacity: 0;
+            z-index: 2;
+        }
+
+        /* RIGHT column — FIX 7: reduced glow */
+        .uq-right {
+            width: 40%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 1.1rem;
+            padding-left: 2rem;
+            opacity: 0;
+            transform: translateX(30px);
+            flex-shrink: 0;
+        }
+        .uq-right-header {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #10B981;
+            text-shadow: 0 0 10px rgba(16,185,129,0.3);
+            margin-bottom: 0.5rem;
+        }
+        .uq-right .uq-item {
+            display: flex;
+            align-items: center;
+            gap: 0.9rem;
+            opacity: 0;
+        }
+        .uq-right .uq-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: rgba(16,185,129,0.1);
+            border: 1px solid rgba(16,185,129,0.35);
+            box-shadow: 0 0 10px rgba(16,185,129,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .uq-right .uq-text {
+            font-size: 0.95rem;
+            color: #e2e8f0;
+            font-weight: 600;
+        }
+
+        /* FIX 5 & 6: BOTTOM FEATURES — full width, evenly distributed */
+        .uq-features {
+            flex-shrink: 0;
+            width: 100%;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid rgba(255,255,255,0.08);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        /* FIX: Key Features label — centered, full width */
+        .uq-features-label {
+            text-align: center;
+            width: 100%;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #3B82F6;
+            margin-bottom: 1rem;
+            opacity: 0;
+        }
+        /* FIX 6: Feature row — spans full width, evenly spaced */
+        .uq-feature-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            width: 100%;
+            gap: 0;
+            position: relative;
+        }
+        /* Horizontal track line behind icons */
+        .uq-feature-row::before {
+            content: '';
+            position: absolute;
+            top: 23px; /* center of 46px icon */
+            left: 23px;
+            right: 23px;
+            height: 1px;
+            background: rgba(59,130,246,0.25);
+            z-index: 0;
+        }
+        /* Looping white dot on the track */
+        .uq-feature-row::after {
+            content: '';
+            position: absolute;
+            top: 17px; /* 23px - 6px radius */
+            left: 23px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 0 8px rgba(255,255,255,0.9), 0 0 18px rgba(59,130,246,0.7);
+            z-index: 1;  /* BELOW icons (z-index 3) */
+            animation: dotTravel 3s linear infinite;
+        }
+        @keyframes dotTravel {
+            0%   { left: 23px; opacity: 0; }
+            5%   { opacity: 1; }
+            95%  { opacity: 1; }
+            100% { left: calc(100% - 35px); opacity: 0; }
+        }
+        .uq-feature {
+            flex: 1;
+            max-width: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 0.45rem;
+            opacity: 0;
+            transform: translateY(18px);
+            position: relative;
+            z-index: 3; /* ABOVE the dot */
+        }
+        .uq-feature-icon {
+            width: 46px;
+            height: 46px;
+            border-radius: 50%;
+            background: #0d1424; /* OPAQUE — hides dot behind it */
+            border: 1px solid rgba(59,130,246,0.45);
+            box-shadow: 0 0 12px rgba(59,130,246,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .uq-feature h4 {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #fff;
+            margin: 0;
+            line-height: 1.3;
+        }
+        .uq-feature p {
+            font-size: 0.7rem;
+            color: #94a3b8;
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        /* === ANIMATION SEQUENCE === */
+        #slide-uniqueness.active .uq-title { animation: fadeIn 0.6s forwards; }
+        #slide-uniqueness.active .uq-divider { animation: uqDividerGrow 0.6s forwards 0.5s; }
+        /* FIX 4: VS — only opacity, NO scale/translate movement */
+        #slide-uniqueness.active .uq-vs { animation: fadeIn 0.5s forwards 1.1s; }
+        /* FIX 7: Left to 0.75 opacity */
+        #slide-uniqueness.active .uq-left { animation: uqLeftFade 0.7s forwards 1.1s; }
+        #slide-uniqueness.active .uq-right { animation: uqRightSlide 0.7s forwards 1.3s; }
+        #slide-uniqueness.active .uq-right .uq-item:nth-child(2) { animation: fadeIn 0.4s forwards 1.7s; }
+        #slide-uniqueness.active .uq-right .uq-item:nth-child(3) { animation: fadeIn 0.4s forwards 1.85s; }
+        #slide-uniqueness.active .uq-right .uq-item:nth-child(4) { animation: fadeIn 0.4s forwards 2.0s; }
+        #slide-uniqueness.active .uq-right .uq-item:nth-child(5) { animation: fadeIn 0.4s forwards 2.15s; }
+        #slide-uniqueness.active .uq-right .uq-item:nth-child(6) { animation: fadeIn 0.4s forwards 2.3s; }
+        #slide-uniqueness.active .uq-left .uq-item { animation: fadeIn 0.5s forwards 1.5s; }
+        #slide-uniqueness.active .uq-features-label { animation: fadeIn 0.5s forwards 2.5s; }
+        #slide-uniqueness.active .uq-feature:nth-child(1) { animation: uqFeatureUp 0.5s forwards 2.6s; }
+        #slide-uniqueness.active .uq-feature:nth-child(2) { animation: uqFeatureUp 0.5s forwards 2.7s; }
+        #slide-uniqueness.active .uq-feature:nth-child(3) { animation: uqFeatureUp 0.5s forwards 2.8s; }
+        #slide-uniqueness.active .uq-feature:nth-child(4) { animation: uqFeatureUp 0.5s forwards 2.9s; }
+        #slide-uniqueness.active .uq-feature:nth-child(5) { animation: uqFeatureUp 0.5s forwards 3.0s; }
+
+        @keyframes uqDividerGrow { to { transform: translateX(-50%) scaleY(1); } }
+        @keyframes uqLeftFade { to { opacity: 0.75; } }
+        @keyframes uqRightSlide { to { opacity: 1; transform: translateX(0); } }
+        @keyframes uqFeatureUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* Color Themes for Cards */
+
+        .uniqueness-title-area {
+            text-align: center;
+            flex-shrink: 0;
+            margin-bottom: 0.5rem;
+        }
+
+        .center-axis-container {
+            position: absolute;
+            left: 50%;
+            top: 80px;
+            width: 80px;
+            bottom: 200px;
+            transform: translateX(-50%);
+            z-index: 5;
+            display: flex;
+            justify-content: center;
+        }
+
+        .strict-divider {
+            position: absolute;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(#10B981, transparent);
+            left: 50%;
+            transform: translateX(-50%) scaleY(0);
+            transform-origin: top;
+        }
+
+        .stable-vs-node {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 62px;
+            height: 62px;
+            background: #0A0F1C;
+            border: 2px solid #10B981;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 900;
+            color: #10B981;
+            font-size: 1.2rem;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.5);
+            opacity: 0;
+            z-index: 10;
+        }
+
+        /* Column Placement */
+        .columns-container {
+            width: 100%;
+            flex: 1;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 0 3%;
+            min-height: 0;
+        }
+
+        .col-left-strict, .col-right-strict {
+            width: 43%;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .col-left-strict { opacity: 0; }
+        .col-right-strict { opacity: 0; transform: translateX(20px); }
+
+        .col-left-strict h3, .col-right-strict h3 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            margin: 0 0 0.8rem 0;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+        }
+
+        .comparison-item-strict {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .col-left-strict .comparison-item-strict {
+            flex-direction: row-reverse;
+        }
+
+        .item-icon-circle-strict {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .col-left-strict .item-icon-circle-strict {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .col-right-strict .item-icon-circle-strict {
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.4);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .item-text-strict {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #f1f5f9;
+        }
+
+        /* Bottom Section - always visible */
+        .bottom-section-strict {
+            flex-shrink: 0;
+            width: 100%;
+            padding: 1rem 60px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .bottom-section-strict > div:first-child {
+            font-size: 1rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #3B82F6;
+        }
+
+        .feature-row-strict {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            gap: 0.5rem;
+        }
+
+        .feature-block-strict {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(16px);
+            gap: 0.4rem;
+        }
+
+        .feature-icon-strict {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(59, 130, 246, 0.1);
+            border: 1px solid rgba(59, 130, 246, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
+        }
+
+        .feature-block-strict h4 { font-size: 0.82rem; margin: 0; color: #fff; font-weight: 700; }
+        .feature-block-strict p { font-size: 0.72rem; margin: 0; color: #94a3b8; line-height: 1.3; }
+
+        /* Animations */
+        .slide.active#slide-uniqueness .strict-divider { animation: growVerticalStrict 0.6s forwards; animation-delay: 0.6s; }
+        .slide.active#slide-uniqueness .stable-vs-node { animation: scaleInFade 0.6s forwards; animation-delay: 1.2s; }
+        .slide.active#slide-uniqueness .col-left-strict { animation: fadeInTo06Strict 0.8s forwards; animation-delay: 1.6s; }
+        .slide.active#slide-uniqueness .col-right-strict { animation: slideInRightStrict 0.8s forwards; animation-delay: 1.8s; }
+        
+        .slide.active#slide-uniqueness .feature-block-strict:nth-child(1) { animation: fadeUp 0.5s forwards; animation-delay: 2.4s; }
+        .slide.active#slide-uniqueness .feature-block-strict:nth-child(2) { animation: fadeUp 0.5s forwards; animation-delay: 2.5s; }
+        .slide.active#slide-uniqueness .feature-block-strict:nth-child(3) { animation: fadeUp 0.5s forwards; animation-delay: 2.6s; }
+        .slide.active#slide-uniqueness .feature-block-strict:nth-child(4) { animation: fadeUp 0.5s forwards; animation-delay: 2.7s; }
+        .slide.active#slide-uniqueness .feature-block-strict:nth-child(5) { animation: fadeUp 0.5s forwards; animation-delay: 2.8s; }
+
+        @keyframes growVerticalStrict { to { transform: translateX(-50%) scaleY(1); } }
+        @keyframes fadeInTo06Strict { to { opacity: 0.6; } }
+        @keyframes slideInRightStrict { to { opacity: 1; transform: translateX(0); } }
+
+        /* Color Themes for Cards */
+        .challenges-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 2.5rem;
+            margin-top: 3rem;
+        }
+
+        .challenge-card {
+            background: rgba(245, 158, 11, 0.03);
+            border: 1px solid rgba(245, 158, 11, 0.1);
+            border-radius: 24px;
+            padding: 2.5rem;
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .challenge-card:hover {
+            background: rgba(245, 158, 11, 0.08);
+            border-color: rgba(245, 158, 11, 0.3);
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .challenge-icon-wrapper {
+            width: 60px;
+            height: 60px;
+            background: rgba(245, 158, 11, 0.1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1.5rem;
+            color: #F59E0B;
+            box-shadow: 0 0 20px rgba(245, 158, 11, 0.1);
+        }
+
+        .challenge-card h3 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #fff;
+            margin: 0 0 1rem 0;
+            font-family: 'Sora', sans-serif;
+        }
+
+        .challenge-card p {
+            font-size: 1.05rem;
+            color: #94a3b8;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* Accent corner for challenges */
+        .challenge-card::after {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 100px;
+            height: 100px;
+            background: radial-gradient(circle, rgba(245, 158, 11, 0.1) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .slide.active#slide-challenges .challenge-card:nth-child(1) { animation: fadeUp 0.8s forwards; animation-delay: 0.3s; }
+        .slide.active#slide-challenges .challenge-card:nth-child(2) { animation: fadeUp 0.8s forwards; animation-delay: 0.5s; }
+        .slide.active#slide-challenges .challenge-card:nth-child(3) { animation: fadeUp 0.8s forwards; animation-delay: 0.7s; }
+        .slide.active#slide-challenges .challenge-card:nth-child(4) { animation: fadeUp 0.8s forwards; animation-delay: 0.9s; }
+
+        /* ================================================
+           SYSTEM ARCHITECTURE SLIDE — PRECISION LAYOUT
+        ================================================ */
+        #slide-sysarch { overflow: hidden; background: #0A0F1C; }
+        .sa3-wrapper {
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            padding: 2.5rem 3rem 1.5rem;
+            box-sizing: border-box;
+        }
+        .sa3-header { flex-shrink: 0; margin-bottom: 1.5rem; }
+        .sa3-title { font-family: 'Sora', sans-serif; font-size: 2.2rem; font-weight: 800; color: #fff; margin: 0; line-height: 1.2; }
+        .sa3-title span { color: #10B981; }
+        .sa3-subtitle { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: #64748b; margin-top: 0.2rem; }
+        
+        .sa3-body {
+            flex: 1; display: flex; width: 100%; position: relative;
+        }
+        .sa3-side {
+            width: 12%; display: flex; flex-direction: column; z-index: 2;
+        }
+        .sa3-side-left { justify-content: flex-end; padding-bottom: 2%; position: relative; }
+        .sa3-side-right { position: relative; }
+        
+        .sa3-center {
+            width: 76%; position: relative;
+            display: grid; grid-template-rows: 1fr 1fr 1fr;
+            z-index: 2; padding-top: 1%; padding-bottom: 1%;
+        }
+        .sa3-svg {
+            position: absolute; top: 0; left: 0;
+            width: 100%; height: 100%; z-index: 1; overflow: visible; pointer-events: none;
+        }
+        .sa3-row {
+            display: flex; width: 100%; align-items: center; justify-content: center; position: relative; z-index: 2;
+        }
+        .sa3-col3 { width: 33.333%; display: flex; justify-content: center; align-items: center; }
+        .sa3-col4 { width: 25%; display: flex; justify-content: center; align-items: center; }
+        
+        .sa3-node {
+            width: 180px; padding: 0.8rem 0.6rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.1);
+            background: #0A0F1C;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+            gap: 0.3rem;
+            opacity: 0;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.4);
+            position: relative; z-index: 2;
+        }
+        .sa3-green { border-color: rgba(16,185,129,0.5); box-shadow: 0 0 15px rgba(16,185,129,0.15), inset 0 0 10px rgba(16,185,129,0.05); }
+        .sa3-teal { border-color: rgba(20,184,166,0.5); box-shadow: 0 0 15px rgba(20,184,166,0.15), inset 0 0 10px rgba(20,184,166,0.05); }
+        .sa3-blue { border-color: rgba(59,130,246,0.5); box-shadow: 0 0 15px rgba(59,130,246,0.15), inset 0 0 10px rgba(59,130,246,0.05); }
+        .sa3-red { border-color: rgba(239,68,68,0.5); box-shadow: 0 0 15px rgba(239,68,68,0.15), inset 0 0 10px rgba(239,68,68,0.05); }
+        .sa3-purple { border-color: rgba(168,85,247,0.5); box-shadow: 0 0 15px rgba(168,85,247,0.15), inset 0 0 10px rgba(168,85,247,0.05); }
+        
+        .sa3-emoji { font-size: 1.4rem; line-height: 1; }
+        .sa3-name { font-size: 0.75rem; font-weight: 700; color: #fff; line-height: 1.2; }
+        .sa3-sub { font-size: 0.55rem; color: #94a3b8; line-height: 1.2; text-transform: uppercase; letter-spacing: 0.5px; }
+        
+        .sa3-label {
+            position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+            font-size: 0.55rem; font-weight: 800; text-transform: uppercase; letter-spacing: 3px;
+            color: #10B981; opacity: 0.8;
+        }
+        .sa3-label.blue { color: #3B82F6; }
+        
+        /* Side Node Positioning */
+        .sa3-side-left .sa3-node { position: absolute; top: 83.333%; right: 1.5rem; transform: translateY(-50%); width: 120px; }
+        .sa3-side-right .sa3-node.notif { position: absolute; top: 70%; left: 1.5rem; transform: translateY(-50%); width: 120px; }
+        .sa3-side-right .sa3-node.sync { position: absolute; top: 90%; left: 1.5rem; transform: translateY(-50%); width: 120px; }
+        
+        /* Animations */
+        @keyframes fadeUpSys {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeUpSide {
+            from { opacity: 0; transform: translateY(15px) translateY(-50%); }
+            to { opacity: 1; transform: translateY(0) translateY(-50%); }
+        }
+        
+        #slide-sysarch.active .sa3-header { animation: fadeIn 0.5s forwards 0.2s; opacity: 0; }
+        #slide-sysarch.active .sa3-row:nth-child(2) .sa3-node { animation: fadeUpSys 0.5s forwards 0.4s; }
+        #slide-sysarch.active .sa3-row:nth-child(3) .sa3-node { animation: fadeUpSys 0.5s forwards 1.0s; }
+        #slide-sysarch.active .sa3-row:nth-child(4) .sa3-node { animation: fadeUpSys 0.5s forwards 1.6s; }
+        #slide-sysarch.active .sa3-side-left .sa3-node { animation: fadeUpSide 0.5s forwards 2.2s; }
+        #slide-sysarch.active .sa3-side-right .sa3-node { animation: fadeUpSide 0.5s forwards 2.4s; }
+
+        /* ================================================
+           NETWORK CHALLENGES SLIDE
+        ================================================ */
+
+        #slide-network {
+            overflow: hidden;
+        }
+        .nc-wrap {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 1.5rem 3rem 8rem 3rem; /* bottom padding = height of nc-flow strip */
+            box-sizing: border-box;
+            gap: 0;
+            position: relative;
+        }
+        /* Title — FIX 1: margin-top so it's not touching the edge */
+        .nc-title {
+            text-align: center;
+            flex-shrink: 0;
+            opacity: 0;
+            margin-top: 40px;
+            margin-bottom: 0.3rem;
+        }
+        .nc-title h1 {
+            font-family: 'Sora', sans-serif;
+            font-size: 2rem;
+            font-weight: 800;
+            margin: 0;
+            color: #fff;
+        }
+        .nc-title h1 span { color: #10B981; }
+        .nc-subtitle {
+            font-size: 0.85rem;
+            color: #64748b;
+            margin: 0.2rem 0 0;
+        }
+        .nc-title-line {
+            width: 80px;
+            height: 2px;
+            background: linear-gradient(to right, #10B981, transparent);
+            margin: 0.4rem auto 0;
+        }
+        /* Main split — FIX 2 critical: cap height so nc-flow always gets space */
+        .nc-main {
+            flex: 0 0 auto;
+            max-height: 54vh;
+            display: flex;
+            gap: 1.5rem;
+            min-height: 0;
+            margin-top: 0.6rem;
+            overflow: hidden;
+        }
+        /* Network strength indicator — FIX 3 */
+        .nc-signal {
+            position: absolute;
+            top: 12px;
+            right: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .nc-signal-label {
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #10B981;
+        }
+        .nc-signal-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 3px;
+        }
+        .nc-bar {
+            width: 6px;
+            border-radius: 2px 2px 0 0;
+            animation: barPulse 2s ease-in-out infinite;
+        }
+        .nc-bar-1 { height: 6px;  background: rgba(16,185,129,0.4); animation-delay: 0s; }
+        .nc-bar-2 { height: 10px; background: rgba(16,185,129,0.6); animation-delay: 0.15s; }
+        .nc-bar-3 { height: 15px; background: rgba(16,185,129,0.8); animation-delay: 0.3s; }
+        .nc-bar-4 { height: 20px; background: #10B981; box-shadow: 0 0 8px rgba(16,185,129,0.6); animation-delay: 0.45s; }
+        @keyframes barPulse {
+            0%, 100% { opacity: 1; }
+            50%       { opacity: 0.4; }
+        }
+        #slide-network.active .nc-signal { animation: fadeIn 0.5s forwards 1.6s; opacity: 0; }
+        /* LEFT — Problem */
+        .nc-left {
+            width: 38%;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;   /* FIX 6: vertically centered */
+            gap: 0.6rem;
+            opacity: 0;
+            border-right: 1px solid rgba(239,68,68,0.2);
+            padding-right: 1.5rem;
+        }
+        .nc-left-label {
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #ef4444;
+            margin-bottom: 0.3rem;
+        }
+        .nc-left-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: #fff;
+            line-height: 1.3;
+            margin-bottom: 0.5rem;
+        }
+        .nc-problem-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.5rem 0.7rem;
+            background: rgba(239,68,68,0.06);
+            border: 1px solid rgba(239,68,68,0.15);
+            border-radius: 10px;
+        }
+        .nc-problem-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(239,68,68,0.12);
+            border: 1px solid rgba(239,68,68,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+        .nc-problem-text {
+            font-size: 0.85rem;
+            color: #fca5a5;
+            font-weight: 500;
+        }
+        /* RIGHT — Solution */
+        .nc-right {
+            width: 60%;
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 0;
+            opacity: 0;
+            transform: translateX(20px);
+            padding: 10px 0;   /* reduced so flow section fits */
+        }
+        .nc-right-label {
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #10B981;
+            align-self: flex-start;
+        }
+        .nc-right-title {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: #fff;
+            margin-bottom: 1.5rem;
+            align-self: flex-start;
+        }
+        .nc-right-title span { color: #10B981; }
+        /* Adaptive levels */
+        .nc-levels {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            width: 85%;              /* FIX 2: controlled width */
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        /* Each level: opacity starts at 1 — only translateY animates */
+        .nc-level {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 0.9rem 1rem;
+            border-radius: 12px;
+            border: 1px solid rgba(16,185,129,0.25);
+            background: rgba(16,185,129,0.06);
+            opacity: 1;
+            transform: translateY(12px);
+            position: relative;
+            width: 100%;
+            box-sizing: border-box;
+            margin-bottom: 22px;     /* expanded gap between cards */
+        }
+        .nc-level:not(:last-child)::after {
+            content: '↓';
+            position: absolute;
+            bottom: -1.1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            color: rgba(16,185,129,0.5);
+            font-size: 0.85rem;
+            line-height: 1;
+        }
+        .nc-level-1 { border-color: rgba(16,185,129,0.6);  background: rgba(16,185,129,0.12); box-shadow: 0 0 16px rgba(16,185,129,0.15); }
+        .nc-level-2 { border-color: rgba(16,185,129,0.4);  background: rgba(16,185,129,0.08); }
+        .nc-level-3 { border-color: rgba(59,130,246,0.4);  background: rgba(59,130,246,0.08); }
+        .nc-level-4 { border-color: rgba(168,85,247,0.4);  background: rgba(168,85,247,0.08); }
+        .nc-level-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 1.1rem;
+        }
+        .nc-level-1 .nc-level-icon { background: rgba(16,185,129,0.2); }
+        .nc-level-2 .nc-level-icon { background: rgba(16,185,129,0.15); }
+        .nc-level-3 .nc-level-icon { background: rgba(59,130,246,0.2); }
+        .nc-level-4 .nc-level-icon { background: rgba(168,85,247,0.2); }
+        .nc-level-info { flex: 1; }
+        .nc-level-num {
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: #64748b;
+            margin-bottom: 0.1rem;
+        }
+        .nc-level-name {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: #fff;
+        }
+        .nc-level-tag {
+            font-size: 0.65rem;
+            font-weight: 700;
+            padding: 0.15rem 0.5rem;
+            border-radius: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .nc-level-1 .nc-level-tag { background: rgba(16,185,129,0.2); color: #10B981; }
+        .nc-level-2 .nc-level-tag { background: rgba(16,185,129,0.15); color: #6ee7b7; }
+        .nc-level-3 .nc-level-tag { background: rgba(59,130,246,0.2); color: #93c5fd; }
+        .nc-level-4 .nc-level-tag { background: rgba(168,85,247,0.2); color: #d8b4fe; }
+        .nc-level-desc {
+            font-size: 0.72rem;
+            color: #94a3b8;
+            line-height: 1.3;
+        }
+        .nc-support {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            padding: 0.5rem 0.9rem;
+            background: rgba(16,185,129,0.05);
+            border: 1px solid rgba(16,185,129,0.2);
+            border-radius: 8px;
+            margin-top: 20px;        /* FIX 5: sits just below system */
+            align-self: center;
+            width: 80%;              /* FIX 5: controlled width */
+            box-sizing: border-box;
+            opacity: 0;
+        }
+        .nc-support-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.78rem;
+            color: #a7f3d0;
+        }
+        /* BOTTOM — Step flow: PINNED to bottom of slide */
+        .nc-flow {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            width: 100%;
+            padding: 0.8rem 2rem;
+            border-top: 1px solid rgba(59,130,246,0.2);
+            background: rgba(6,12,28,0.97);
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.4);
+            opacity: 1;  /* ALWAYS VISIBLE — no animation gate */
+        }
+
+        .nc-flow-title {
+            text-align: center;
+            font-size: 0.65rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: #3B82F6;
+            margin-bottom: 0.7rem;
+        }
+        .nc-steps {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            gap: 0;
+        }
+        .nc-step {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            gap: 0.3rem;
+            flex: 1;
+            position: relative;
+        }
+        /* Dashed arrow connector → between each step */
+        .nc-step:not(:last-child)::after {
+            content: '→';
+            position: absolute;
+            top: 20px;
+            right: -6px;
+            font-size: 0.85rem;
+            color: rgba(255,255,255,0.2);
+            z-index: 2;
+        }
+        /* Large icon circle */
+        .nc-step-icon {
+            width: 58px;
+            height: 58px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            flex-shrink: 0;
+        }
+        /* Number badge top-left */
+        .nc-step-badge {
+            position: absolute;
+            top: -4px;
+            left: -4px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #0a0f1c;
+            border: 1.5px solid;
+            font-size: 0.6rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 3;
+        }
+        /* Per-step accent colors */
+        .nc-step-1 .nc-step-icon { background: rgba(16,185,129,0.15); border: 2px solid #10B981; box-shadow: 0 0 14px rgba(16,185,129,0.3); }
+        .nc-step-1 .nc-step-badge { border-color: #10B981; color: #10B981; }
+        .nc-step-2 .nc-step-icon { background: rgba(234,179,8,0.12); border: 2px solid #eab308; box-shadow: 0 0 12px rgba(234,179,8,0.25); }
+        .nc-step-2 .nc-step-badge { border-color: #eab308; color: #eab308; }
+        .nc-step-3 .nc-step-icon { background: rgba(249,115,22,0.12); border: 2px solid #f97316; box-shadow: 0 0 12px rgba(249,115,22,0.25); }
+        .nc-step-3 .nc-step-badge { border-color: #f97316; color: #f97316; }
+        .nc-step-4 .nc-step-icon { background: rgba(239,68,68,0.12); border: 2px solid #ef4444; box-shadow: 0 0 12px rgba(239,68,68,0.25); }
+        .nc-step-4 .nc-step-badge { border-color: #ef4444; color: #ef4444; }
+        .nc-step-5 .nc-step-icon { background: rgba(59,130,246,0.12); border: 2px solid #3B82F6; box-shadow: 0 0 12px rgba(59,130,246,0.25); }
+        .nc-step-5 .nc-step-badge { border-color: #3B82F6; color: #3B82F6; }
+        .nc-step-6 .nc-step-icon { background: rgba(16,185,129,0.15); border: 2px solid #10B981; box-shadow: 0 0 14px rgba(16,185,129,0.3); }
+        .nc-step-6 .nc-step-badge { border-color: #10B981; color: #10B981; }
+        .nc-step-label {
+            font-size: 0.68rem;
+            font-weight: 700;
+            color: #e2e8f0;
+            line-height: 1.2;
+            margin-top: 0.2rem;
+        }
+        .nc-step-desc { font-size: 0.58rem; color: #94a3b8; line-height: 1.2; }
+        .nc-step-1 .nc-step-desc { color: #10B981; font-weight: 600; }
+
+        /* ANIMATIONS */
+        #slide-network.active .nc-title    { animation: fadeIn 0.6s forwards; }
+        #slide-network.active .nc-left     { animation: fadeIn 0.7s forwards 0.5s; }
+        #slide-network.active .nc-right    { animation: ncRightIn 0.7s forwards 0.7s; }
+        /* Levels: translateY only — opacity is inherited from nc-right */
+        #slide-network.active .nc-level-1  { animation: ncLevelIn 0.4s forwards 0.9s; }
+        #slide-network.active .nc-level-2  { animation: ncLevelIn 0.4s forwards 1.1s; }
+        #slide-network.active .nc-level-3  { animation: ncLevelIn 0.4s forwards 1.3s; }
+        #slide-network.active .nc-level-4  { animation: ncLevelIn 0.4s forwards 1.5s; }
+        #slide-network.active .nc-support  { animation: fadeIn 0.5s forwards 1.7s; }
+        /* Flow strip: always visible when slide is active */
+        #slide-network.active .nc-flow     { animation: ncFlowIn 0.5s forwards 1.8s; }
+        @keyframes ncFlowIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes ncRightIn { to { opacity: 1; transform: translateX(0); } }
+        @keyframes ncLevelIn { to { opacity: 1; transform: translateY(0); } }
+
+
+        /* Color Themes for Cards */
+        /* Card 1: Blue */
+        .card-1 { border-top-color: rgba(59, 130, 246, 0.5); box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 0 40px rgba(59, 130, 246, 0.05); }
+        .card-1::before { background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(0,0,0,0) 70%); }
+        .card-1:hover { box-shadow: 0 25px 50px rgba(0,0,0,0.5), inset 0 0 60px rgba(59, 130, 246, 0.1); border-color: rgba(59, 130, 246, 0.4); }
+        .card-1 .impact-icon-wrapper { background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.05)); border-color: rgba(59, 130, 246, 0.3); box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2); }
+        .card-1 .impact-icon-wrapper svg { stroke: #3B82F6; filter: drop-shadow(0 0 5px rgba(59,130,246,0.5)); }
+
+        /* Card 2: Green */
+        .card-2 { border-top-color: rgba(16, 185, 129, 0.5); box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 0 40px rgba(16, 185, 129, 0.05); }
+        .card-2::before { background: radial-gradient(circle, rgba(16, 185, 129, 0.15) 0%, rgba(0,0,0,0) 70%); }
+        .card-2:hover { box-shadow: 0 25px 50px rgba(0,0,0,0.5), inset 0 0 60px rgba(16, 185, 129, 0.1); border-color: rgba(16, 185, 129, 0.4); }
+        .card-2 .impact-icon-wrapper { background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.05)); border-color: rgba(16, 185, 129, 0.3); box-shadow: 0 10px 25px rgba(16, 185, 129, 0.2); }
+        .card-2 .impact-icon-wrapper svg { stroke: #10B981; filter: drop-shadow(0 0 5px rgba(16,185,129,0.5)); }
+
+        /* Card 3: Amber */
+        .card-3 { border-top-color: rgba(245, 158, 11, 0.5); box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 0 40px rgba(245, 158, 11, 0.05); }
+        .card-3::before { background: radial-gradient(circle, rgba(245, 158, 11, 0.15) 0%, rgba(0,0,0,0) 70%); }
+        .card-3:hover { box-shadow: 0 25px 50px rgba(0,0,0,0.5), inset 0 0 60px rgba(245, 158, 11, 0.1); border-color: rgba(245, 158, 11, 0.4); }
+        .card-3 .impact-icon-wrapper { background: linear-gradient(135deg, rgba(245, 158, 11, 0.2), rgba(245, 158, 11, 0.05)); border-color: rgba(245, 158, 11, 0.3); box-shadow: 0 10px 25px rgba(245, 158, 11, 0.2); }
+        .card-3 .impact-icon-wrapper svg { stroke: #F59E0B; filter: drop-shadow(0 0 5px rgba(245,158,11,0.5)); }
+
+        /* Card 4: Purple */
+        .card-4 { border-top-color: rgba(139, 92, 246, 0.5); box-shadow: 0 20px 40px rgba(0,0,0,0.4), inset 0 0 40px rgba(139, 92, 246, 0.05); }
+        .card-4::before { background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(0,0,0,0) 70%); }
+        .card-4:hover { box-shadow: 0 25px 50px rgba(0,0,0,0.5), inset 0 0 60px rgba(139, 92, 246, 0.1); border-color: rgba(139, 92, 246, 0.4); }
+        .card-4 .impact-icon-wrapper { background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(139, 92, 246, 0.05)); border-color: rgba(139, 92, 246, 0.3); box-shadow: 0 10px 25px rgba(139, 92, 246, 0.2); }
+        .card-4 .impact-icon-wrapper svg { stroke: #8B5CF6; filter: drop-shadow(0 0 5px rgba(139,92,246,0.5)); }
+
+        /* Flow Diagram */
+        .intro-flow-container {
+            position: absolute;
+            top: 45%;
+            left: 10%;
+            right: 10%;
+            height: 200px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1;
+            opacity: 0;
+        }
+        .slide.active .intro-flow-container {
+            animation: fadeInFlow 1s ease forwards;
+            animation-delay: 0.8s;
+        }
+        @keyframes fadeInFlow { to { opacity: 1; } }
+
+        .flow-line-svg {
+            position: absolute;
+            top: 50%;
+            left: 5%;
+            right: 5%;
+            width: 90%;
+            height: 10px;
+            transform: translateY(-50%);
+            z-index: 0;
+            overflow: visible;
+        }
+        .flow-path-bg {
+            stroke: rgba(255, 255, 255, 0.05);
+            stroke-width: 4;
+            fill: none;
+        }
+        .flow-path-draw {
+            stroke: #10B981;
+            stroke-width: 4;
+            fill: none;
+            stroke-dasharray: 1000;
+            stroke-dashoffset: 1000;
+            filter: drop-shadow(0 0 8px rgba(16,185,129,0.5));
+        }
+        .slide.active .flow-path-draw {
+            animation: drawFlowLine 2.5s ease-in-out forwards;
+            animation-delay: 1.2s;
+        }
+        @keyframes drawFlowLine { to { stroke-dashoffset: 0; } }
+
+        .flow-node {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            z-index: 1;
+            opacity: 0;
+            transform: scale(0.8);
+        }
+        .flow-icon-circle {
+            width: 80px; height: 80px;
+            background: #0F172A;
+            border: 2px solid rgba(16,185,129,0.3);
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            position: relative;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        .flow-icon-circle svg { width: 40px; height: 40px; color: #10B981; }
+        
+        .flow-node-label {
+            font-family: 'Sora', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #f8fafc;
+            text-align: center;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .slide.active .node-1 { animation: popNode 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 1.4s; }
+        .slide.active .node-2 { animation: popNode 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 1.8s; }
+        .slide.active .node-3 { animation: popNode 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 2.2s; }
+        .slide.active .node-4 { animation: popNode 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; animation-delay: 2.6s; }
+        
+        @keyframes popNode {
+            50% { opacity: 1; transform: scale(1.1); box-shadow: 0 0 30px rgba(16,185,129,0.6); }
+            100% { opacity: 1; transform: scale(1); box-shadow: 0 0 15px rgba(16,185,129,0.2); }
+        }
+
+        /* Support Text */
+        .intro-support-text {
+            position: absolute;
+            bottom: 12%;
+            display: flex;
+            gap: 3.5rem;
+            opacity: 0;
+            width: 100%;
+            justify-content: center;
+        }
+        .support-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            font-size: 1.15rem;
+            color: #cbd5e1;
+            opacity: 0;
+            transform: translateY(20px);
+            background: rgba(255,255,255,0.03);
+            padding: 1rem 1.5rem;
+            border-radius: 50px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .support-item svg { width: 20px; height: 20px; color: #3B82F6; }
+
+        .slide.active .intro-support-text { animation: fadeIn 1s forwards; animation-delay: 3.0s; }
+        .slide.active .support-item:nth-child(1) { animation: floatUp 0.6s ease forwards; animation-delay: 3.1s; }
+        .slide.active .support-item:nth-child(2) { animation: floatUp 0.6s ease forwards; animation-delay: 3.3s; }
+        .slide.active .support-item:nth-child(3) { animation: floatUp 0.6s ease forwards; animation-delay: 3.5s; }
+        /* ================================================
+           TECH STACK SLIDE — CENTER HUB LAYOUT
+        ================================================ */
+        #slide-10 { overflow: hidden; background: #0A0F1C; }
+        .ts-wrapper {
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            padding: 2.5rem 3rem 1.5rem;
+            box-sizing: border-box;
+        }
+        .ts-header { flex-shrink: 0; margin-bottom: 0.5rem; }
+        .ts-title { font-family: 'Sora', sans-serif; font-size: 2.2rem; font-weight: 800; color: #fff; margin: 0; line-height: 1.2; }
+        .ts-title span { color: #10B981; }
+        .ts-subtitle { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 3px; color: #64748b; margin-top: 0.2rem; }
+
+        .ts-body {
+            flex: 1; width: 100%; position: relative;
+            margin-top: 1rem;
+        }
+
+        /* SVG Lines */
+        .ts-svg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; overflow: visible;
+        }
+        .ts-line {
+            stroke-dasharray: 100;
+            stroke-dashoffset: 100;
+        }
+
+        /* Nodes Base */
+        .ts-node {
+            position: absolute;
+            transform: translate(-50%, -50%);
+            z-index: 2;
+        }
+
+        /* Center Hub */
+        .ts-center {
+            top: 50%; left: 50%;
+            width: 150px; height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05));
+            border: 2px solid rgba(16,185,129,0.8);
+            box-shadow: 0 0 30px rgba(16,185,129,0.4), inset 0 0 20px rgba(16,185,129,0.2);
+            display: flex; align-items: center; justify-content: center; text-align: center;
+            font-weight: 800; font-size: 1.15rem; color: #fff;
+            line-height: 1.3; letter-spacing: 1px;
+            opacity: 0; /* for animation */
+        }
+
+        /* Clusters */
+        .ts-cluster {
+            width: 240px;
+            padding: 1.2rem;
+            border-radius: 16px;
+            background: rgba(10,15,28,0.95);
+            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            opacity: 0;
+            display: flex; flex-direction: column; gap: 0.6rem;
+        }
+        .ts-top { top: 15%; left: 50%; }
+        .ts-bottom { top: 85%; left: 50%; }
+        .ts-left { top: 50%; left: 17%; }
+        .ts-right { top: 50%; left: 83%; width: 260px; } /* Slightly wider for the important one */
+
+        .ts-right.highlight {
+            border: 1px solid rgba(168,85,247,0.5);
+            background: rgba(168,85,247,0.05);
+            box-shadow: 0 10px 40px rgba(168,85,247,0.2), inset 0 0 15px rgba(168,85,247,0.08);
+        }
+
+        .ts-cluster-title {
+            font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px;
+            margin-bottom: 0.2rem; border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 0.5rem; text-align: center;
+        }
+        .ts-green-title { color: #10B981; border-bottom-color: rgba(16,185,129,0.3); }
+        .ts-blue-title { color: #3B82F6; border-bottom-color: rgba(59,130,246,0.3); }
+        .ts-purple-title { color: #A855F7; border-bottom-color: rgba(168,85,247,0.3); }
+
+        .ts-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            padding: 0.5rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.8rem; font-weight: 600; color: #e2e8f0;
+            display: flex; align-items: center; gap: 0.6rem;
+        }
+        .ts-item::before {
+            content: ''; width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+        }
+        .ts-top .ts-item::before { background: #10B981; box-shadow: 0 0 6px #10B981; }
+        .ts-left .ts-item::before { background: #3B82F6; box-shadow: 0 0 6px #3B82F6; }
+        .ts-bottom .ts-item::before { background: #3B82F6; box-shadow: 0 0 6px #3B82F6; }
+        .ts-right .ts-item::before { background: #A855F7; box-shadow: 0 0 8px #A855F7; }
+
+        /* Animations */
+        @keyframes tsPopIn {
+            0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+            100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+        }
+        @keyframes tsPulse {
+            0% { box-shadow: 0 0 30px rgba(16,185,129,0.4), inset 0 0 20px rgba(16,185,129,0.2); }
+            50% { box-shadow: 0 0 50px rgba(16,185,129,0.6), inset 0 0 30px rgba(16,185,129,0.3); }
+            100% { box-shadow: 0 0 30px rgba(16,185,129,0.4), inset 0 0 20px rgba(16,185,129,0.2); }
+        }
+        @keyframes tsDrawLine {
+            to { stroke-dashoffset: 0; }
+        }
+        @keyframes tsFadeUp {
+            from { opacity: 0; transform: translate(-50%, calc(-50% + 20px)); }
+            to { opacity: 1; transform: translate(-50%, -50%); }
+        }
+        @keyframes tsFadeUpHighlight {
+            from { opacity: 0; transform: translate(-50%, calc(-50% + 20px)) scale(1.05); }
+            to { opacity: 1; transform: translate(-50%, -50%) scale(1.05); }
+        }
+
+        #slide-10.active .ts-header { animation: fadeIn 0.5s forwards 0.2s; opacity: 0; }
+        
+        .ts-end-nodes { opacity: 0; }
+        #slide-10.active .ts-end-nodes { animation: fadeIn 0.5s forwards 0.8s; }
+
+        /* 1. Center appears */
+        #slide-10.active .ts-center {
+            animation: tsPopIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards 0.4s,
+                       tsPulse 3s infinite ease-in-out 1s;
+        }
+
+        /* 2. Lines connect out */
+        #slide-10.active .ts-line {
+            animation: tsDrawLine 0.8s ease-out forwards 0.8s;
+        }
+
+        /* 3. Clusters appear */
+        #slide-10.active .ts-top { animation: tsFadeUp 0.5s forwards 1.2s; }
+        #slide-10.active .ts-left { animation: tsFadeUp 0.5s forwards 1.4s; }
+        #slide-10.active .ts-right { animation: tsFadeUpHighlight 0.5s forwards 1.6s; }
+        #slide-10.active .ts-bottom { animation: tsFadeUp 0.5s forwards 1.8s; }
+        /* ================================================
+           FINAL CONCLUSION SLIDE
+        ================================================ */
+        #slide-12 { overflow: hidden; background: #0A0F1C; }
+        .conc-wrapper {
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            text-align: center;
+            padding: 4rem;
+            box-sizing: border-box;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .conc-label {
+            font-size: 0.8rem; font-weight: 700; text-transform: uppercase; letter-spacing: 4px;
+            color: #64748b; margin-bottom: 2rem;
+            opacity: 0;
+        }
+
+        .conc-main-text {
+            font-family: 'Sora', sans-serif;
+            font-size: 2.8rem; font-weight: 800; line-height: 1.2;
+            color: #f8fafc;
+            max-width: 900px;
+            margin-bottom: 3.5rem;
+            text-shadow: 0 0 40px rgba(255,255,255,0.1);
+            opacity: 0; transform: translateY(20px);
+        }
+        .conc-highlight {
+            color: #10B981;
+            text-shadow: 0 0 30px rgba(16,185,129,0.3);
+        }
+
+        .conc-points {
+            display: flex; flex-direction: column; gap: 1.2rem;
+            margin-bottom: 4rem;
+        }
+        .conc-point {
+            font-size: 1.1rem; color: #cbd5e1; font-weight: 500;
+            opacity: 0; transform: translateY(15px);
+            display: flex; align-items: center; justify-content: center; gap: 0.8rem;
+        }
+        .conc-point::before {
+            content: ''; width: 6px; height: 6px; border-radius: 50%;
+            background: rgba(16,185,129,0.6);
+            box-shadow: 0 0 8px rgba(16,185,129,0.4);
+        }
+
+        .conc-final {
+            font-family: 'Sora', sans-serif; font-size: 1.4rem; font-weight: 600;
+            color: #10B981;
+            padding: 1rem 2.5rem;
+            border-top: 1px solid rgba(16,185,129,0.2);
+            border-bottom: 1px solid rgba(16,185,129,0.2);
+            background: linear-gradient(90deg, transparent, rgba(16,185,129,0.05), transparent);
+            opacity: 0; transform: scale(0.95);
+        }
+
+        .conc-thanks {
+            position: absolute; bottom: 3rem; left: 50%; transform: translateX(-50%);
+            font-size: 0.9rem; font-weight: 600; color: #475569; letter-spacing: 2px;
+            text-transform: uppercase;
+            opacity: 0;
+        }
+
+        /* Animations */
+        @keyframes concFadeUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes concFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        @keyframes concFinalPop {
+            0% { opacity: 0; transform: scale(0.95); }
+            50% { opacity: 1; transform: scale(1.02); }
+            100% { opacity: 1; transform: scale(1); text-shadow: 0 0 20px rgba(16,185,129,0.4); }
+        }
+
+        #slide-12.active .conc-label { animation: concFadeIn 0.8s forwards 0.3s; }
+        #slide-12.active .conc-main-text { animation: concFadeUp 1s cubic-bezier(0.2, 0.8, 0.2, 1) forwards 0.6s; }
+        #slide-12.active .conc-point:nth-child(1) { animation: concFadeUp 0.8s forwards 1.2s; }
+        #slide-12.active .conc-point:nth-child(2) { animation: concFadeUp 0.8s forwards 1.5s; }
+        #slide-12.active .conc-point:nth-child(3) { animation: concFadeUp 0.8s forwards 1.8s; }
+        #slide-12.active .conc-final { animation: concFinalPop 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards 2.5s; }
+        #slide-12.active .conc-thanks { animation: concFadeIn 1s forwards 3.5s; }
+
+        /* DarkVeil Background */
+        .darkveil-container {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 0;
+            opacity: 0.9;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Slide -1: Start Screen -->
+    <div class="slide active" id="slide-start">
+        <div id="darkveil-container" class="darkveil-container"></div>
+        <div class="slide-content" style="align-items: center; position: relative; z-index: 10;">
+            <div class="start-title">GramCare</div>
+            <button class="start-btn" id="start-btn">
+                <span>Start Presentation</span>
+                <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12h14"></path>
+                    <path d="M12 5l7 7-7 7"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- Slide 0: Section Intro -->
+    <div class="slide" id="slide-0">
+        <div class="slide-content" style="align-items: center;">
+            <div class="cinematic-text">Problem Statement</div>
+        </div>
+    </div>
+
+    <!-- Slide 1: Problem Statement -->
+    <div class="slide" id="slide-1">
+        <div class="slide-content problem-slide-content" style="width: 90%; max-width: 1600px; height: 85%;">
+            <div class="problem-layout">
+                
+                <!-- LEFT SIDE: Cinematic Scene -->
+                <div class="problem-left">
+                    <div class="problem-title-area">
+                        <h1 class="problem-headline">PROBLEM <span class="text-green">STATEMENT</span></h1>
+                        <div class="accent-line-left"></div>
+                    </div>
+                    
+                    <div class="road-scene">
+                        <svg class="winding-road" viewBox="0 0 600 800" preserveAspectRatio="none">
+                            <defs>
+                                <filter id="glow-road" x="-30%" y="-30%" width="160%" height="160%">
+                                    <feGaussianBlur stdDeviation="6" result="blur" />
+                                    <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                                </filter>
+                                <filter id="shadow-blur" x="-50%" y="-50%" width="200%" height="200%">
+                                    <feGaussianBlur stdDeviation="15" />
+                                </filter>
+                            </defs>
+                            
+                            <!-- SVG Path: Elegant S-Curve -->
+                            <g>
+                                <!-- Deep shadow under road -->
+                                <path d="M 150 150 C 350 200, 350 350, 250 400 C 150 450, 100 550, 150 650" fill="none" stroke="rgba(0,0,0,0.6)" stroke-width="30" filter="url(#shadow-blur)"/>
+                                <!-- Outer soft blur -->
+                                <path d="M 150 150 C 350 200, 350 350, 250 400 C 150 450, 100 550, 150 650" fill="none" stroke="rgba(16, 185, 129, 0.05)" stroke-width="40" stroke-linecap="round" filter="url(#glow-road)"/>
+                                <!-- Base road -->
+                                <path d="M 150 150 C 350 200, 350 350, 250 400 C 150 450, 100 550, 150 650" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="16" stroke-linecap="round"/>
+                                <!-- Animated drawing line (green) -->
+                                <path class="road-draw" id="road-draw-path" d="M 150 150 C 350 200, 350 350, 250 400 C 150 450, 100 550, 150 650" fill="none" stroke="#10B981" stroke-width="4" stroke-linecap="round" />
+                            </g>
+
+                            <!-- Main vehicle dot -->
+                            <circle class="vehicle-dot" r="6" fill="#ffffff" filter="url(#glow-road)">
+                                <animateMotion dur="6s" repeatCount="indefinite" begin="3.5s">
+                                    <mpath href="#road-draw-path"/>
+                                </animateMotion>
+                            </circle>
+                        </svg>
+
+                        <!-- Nodes -->
+                        <div class="scene-node village-node">
+                            <div class="img-wrapper">
+                                <img src="./village.png" alt="Rural Village" />
+                            </div>
+                            <div class="node-text">
+                                <h4 class="text-green">RURAL VILLAGE</h4>
+                            </div>
+                        </div>
+
+                        <!-- Repositioned Delay Label -->
+                        <div class="scene-node delay-label">
+                            <!-- thin connector pointing left towards road -->
+                            <div style="position: absolute; right: 100%; top: 50%; width: 80px; border-bottom: 1px dashed rgba(16,185,129,0.4);"></div>
+                            <div class="node-text">
+                                <h4 class="text-green" style="font-size: 1.15rem; letter-spacing: 1px;">LONG DISTANCE</h4>
+                                <p style="font-size: 0.95rem; color: #e2e8f0;">High travel cost<br>& delayed treatment</p>
+                            </div>
+                        </div>
+
+                        <div class="scene-node hospital-node">
+                            <div class="hospital-img-wrapper">
+                                <img src="./hospital.png" alt="City Hospital" />
+                            </div>
+                            <div class="node-text">
+                                <h4 class="text-red">CITY HOSPITAL</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT SIDE: Insight Cards -->
+                <div class="problem-right">
+                    
+                    <!-- Top Insight: Specialist Gap -->
+                    <div class="insight-card insight-top-card">
+                        <div class="chair-visual-floating">
+                            <!-- Silhouette Chair SVG -->
+                            <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <line x1="17" y1="8" x2="23" y2="14"></line>
+                                <line x1="23" y1="8" x2="17" y2="14"></line>
+                            </svg>
+                        </div>
+                        <div class="stat-highlight-floating">80%</div>
+                        <p class="stat-text-floating">of specialist doctor positions<br>in rural health centers<br>are <span class="text-green" style="font-weight: 800;">VACANT</span></p>
+                    </div>
+
+                    <!-- Bottom Insight: Record Problem -->
+                    <div class="insight-card insight-bottom-card">
+                        <div class="papers-bg-floating">
+                            <svg viewBox="0 0 24 24" fill="currentColor" style="position:absolute; top:20px; right:20px; width:80px; height:80px; transform:rotate(15deg);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"></path></svg>
+                            <svg viewBox="0 0 24 24" fill="currentColor" style="position:absolute; top:60px; right:60px; width:60px; height:60px; transform:rotate(-15deg);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"></path></svg>
+                            <svg viewBox="0 0 24 24" fill="currentColor" style="position:absolute; bottom:20px; right:40px; width:100px; height:100px; transform:rotate(30deg);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"></path></svg>
+                        </div>
+                        <h3 class="insight-title">POOR RECORD MANAGEMENT</h3>
+                        <ul class="floating-list">
+                            <li class="floating-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+                                Re-treatments
+                            </li>
+                            <li class="floating-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+                                Misdiagnosis
+                            </li>
+                            <li class="floating-item">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                                Delayed Treatment
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 2: Brand Reveal -->
+    <div class="slide" id="slide-brand-reveal">
+        <div class="brand-reveal-bg"></div>
+        <div class="slide-content brand-reveal-layout">
+            <div class="brand-logo-container">
+                <img src="./gramcare-logo.png" alt="GramCare Logo" />
+            </div>
+            <h2 class="brand-name-text">
+                <span style="color: #10B981;">Gram</span><span style="color: #3B82F6;">Care</span>
+            </h2>
+        </div>
+    </div>
+
+    <!-- Slide 3: Introduction -->
+    <div class="slide" id="slide-intro">
+        <!-- Background dim that fades out -->
+        <div class="intro-bg-fade"></div>
+        
+        <!-- Header Section (The transforming logo) -->
+        <div class="intro-header-wrapper">
+            <div class="brand-logo-container-small">
+                <img src="./gramcare-logo.png" alt="GramCare Logo" />
+            </div>
+            <h2 class="brand-name-text-small">
+                <span style="color: #10B981;">Gram</span><span style="color: #3B82F6;">Care</span>
+            </h2>
+            <div class="header-underline"></div>
+        </div>
+
+        <!-- Text Block -->
+        <div class="intro-text-block">
+            <p><span class="highlight-green">GramCare</span> is a rural healthcare access platform designed to bridge the gap between underserved village populations and qualified urban doctors through an assisted teleconsultation model. Instead of relying on direct digital usage, GramCare operates through local healthcare centers where trained community admins manage the entire consultation process for patients. This ensures that even individuals without smartphones or digital literacy can access quality medical care.</p>
+            <p>By providing doctors with structured patient data before consultations and enabling continuous communication even in low-network conditions, <span class="highlight-blue">GramCare</span> makes healthcare more accessible, reliable, and efficient. The platform focuses on building trust through local presence while using technology to deliver timely and affordable medical support to rural communities.</p>
+        </div>
+
+        <!-- Bottom Connection Visual -->
+        <div class="intro-connection-visual">
+            
+            <!-- Left Side: Urban Doctors -->
+            <div class="connection-node node-urban">
+                <div class="connection-icon-wrapper">
+                    <!-- Elegant abstract hospital/building icon -->
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><path d="M9 22v-4h6v4"></path><path d="M8 6h.01"></path><path d="M16 6h.01"></path><path d="M12 6h.01"></path><path d="M12 10h.01"></path><path d="M12 14h.01"></path><path d="M16 10h.01"></path><path d="M16 14h.01"></path><path d="M8 10h.01"></path><path d="M8 14h.01"></path></svg>
+                </div>
+                <div class="connection-label label-blue">Urban Doctors</div>
+            </div>
+
+            <!-- The Bridge Line -->
+            <div class="connection-bridge">
+                <svg class="bridge-svg" viewBox="0 0 600 120" preserveAspectRatio="none">
+                    <!-- Faint background path -->
+                    <path class="bridge-path-bg" d="M 550 100 Q 300 -20 50 100" />
+                    <!-- Animated drawing path -->
+                    <path class="bridge-path-draw" id="bridge-path" d="M 550 100 Q 300 -20 50 100" />
+                    
+                    <!-- Traveling glowing pulse -->
+                    <circle r="4" fill="#ffffff" filter="drop-shadow(0 0 8px #10B981)">
+                        <animateMotion dur="3s" repeatCount="indefinite" begin="2.5s">
+                            <mpath href="#bridge-path"/>
+                        </animateMotion>
+                    </circle>
+                </svg>
+                <div class="bridge-center-label">GramCare</div>
+            </div>
+
+            <!-- Right Side: Rural Patients -->
+            <div class="connection-node node-rural">
+                <div class="connection-icon-wrapper">
+                    <!-- Elegant abstract village/home icon -->
+                    <svg viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg>
+                </div>
+                <div class="connection-label label-green">Rural Patients</div>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Slide 3: Workflow -->
+    <div class="slide" id="slide-3">
+        <div class="slide-content" style="position: relative; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+            <h1 class="slide-title">SYSTEM WORKFLOW</h1>
+        </div>
+    </div>
+
+    <!-- Slide 4: Detailed Workflow -->
+    <div class="slide" id="slide-4">
+        <div class="slide-content" style="height: 100%; justify-content: flex-start; padding-top: 4rem;">
+            <h2 class="slide-title" style="font-size: 2.2rem; text-align: center; margin-bottom: 3rem; font-family: 'Sora', sans-serif;">HOW GRAMCARE WORKS</h2>
+            
+            <div class="workflow-timeline">
+                <div class="timeline-center-line"></div>
+                <div class="timeline-draw-line"></div>
+                <div class="timeline-loop-dot"></div>
+
+                <!-- Step 1 -->
+                <div class="timeline-step step-1 step-left">
+                    <div class="step-content">
+                        <h3>1. Patient Arrival</h3>
+                        <p>Patient visits the local health center with their health concerns.</p>
+                    </div>
+                    <div class="step-icon-wrapper">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                    </div>
+                    <div class="step-empty"></div>
+                </div>
+
+                <!-- Step 2 -->
+                <div class="timeline-step step-2 step-right">
+                    <div class="step-empty"></div>
+                    <div class="step-icon-wrapper">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M16 13H8"></path><path d="M16 17H8"></path><path d="M10 9H8"></path></svg>
+                    </div>
+                    <div class="step-content">
+                        <h3>2. Details Captured</h3>
+                        <p>Trained community admin notes down symptoms, vitals, and medical history into the platform.</p>
+                    </div>
+                </div>
+
+                <!-- Step 3 -->
+                <div class="timeline-step step-3 step-left">
+                    <div class="step-content">
+                        <h3>3. Appointment Booked</h3>
+                        <p>The system automatically schedules a slot with the right urban specialist.</p>
+                    </div>
+                    <div class="step-icon-wrapper">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    </div>
+                    <div class="step-empty"></div>
+                </div>
+
+                <!-- Step 4 -->
+                <div class="timeline-step step-4 step-right">
+                    <div class="step-empty"></div>
+                    <div class="step-icon-wrapper">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                    </div>
+                    <div class="step-content">
+                        <h3>4. Online Consultation</h3>
+                        <p>Doctor reviews structured data and conducts a video/audio consultation guided by the admin.</p>
+                    </div>
+                </div>
+
+                <!-- Step 5 -->
+                <div class="timeline-step step-5 step-left">
+                    <div class="step-content">
+                        <h3>5. Follow-up Checkups</h3>
+                        <p>Post-consultation care, prescriptions, and follow-ups are managed locally to ensure recovery.</p>
+                    </div>
+                    <div class="step-icon-wrapper">
+                        <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg>
+                    </div>
+                    <div class="step-empty"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 5: Impact & Benefits Title -->
+    <div class="slide" id="slide-5">
+        <div class="slide-content" style="align-items: center;">
+            <div class="cinematic-text">IMPACT & BENEFITS</div>
+        </div>
+    </div>
+
+    <!-- Slide 6: Detailed Impact -->
+    <div class="slide" id="slide-6">
+        <div id="aurora-container"></div>
+        
+        <div class="imp3-wrapper">
+            <div class="imp3-bg-glow"></div>
+            
+            <div class="imp3-header">
+                <h2 class="imp3-title">Impact & Benefits <span>GramCare</span></h2>
+            </div>
+
+            <div class="imp3-body">
+                <!-- SVG Lines -->
+                <svg class="imp3-svg">
+                    <!-- Top Left -->
+                    <g>
+                        <line x1="25%" y1="22%" x2="50%" y2="50%" pathLength="100" stroke-width="2" stroke="rgba(16,185,129,0.25)" class="imp3-line-base" />
+                        <line x1="25%" y1="22%" x2="50%" y2="50%" pathLength="100" stroke-width="2" stroke="rgba(16,185,129,0.8)" class="imp3-line-flow" />
+                    </g>
+                    <!-- Top Right -->
+                    <g>
+                        <line x1="75%" y1="22%" x2="50%" y2="50%" pathLength="100" stroke-width="2" stroke="rgba(16,185,129,0.25)" class="imp3-line-base" />
+                        <line x1="75%" y1="22%" x2="50%" y2="50%" pathLength="100" stroke-width="2" stroke="rgba(16,185,129,0.8)" class="imp3-line-flow" />
+                    </g>
+                    <!-- Mid Left -->
+                    <g>
+                        <line x1="15%" y1="50%" x2="50%" y2="50%" pathLength="100" stroke-width="2" stroke="rgba(16,185,129,0.25)" class="imp3-line-base" />
+                        <line x1="15%" y1="50%" x2="50%" y2="50%" pathLength="100" stroke-width="2" stroke="rgba(16,185,129,0.8)" class="imp3-line-flow" />
+                    </g>
+                    <!-- Mid Right -->
+                    <g>
+                        <line x1="85%" y1="50%" x2="50%" y2="50%" pathLength="100" stroke-width="2" stroke="rgba(16,185,129,0.25)" class="imp3-line-base" />
+                        <line x1="85%" y1="50%" x2="50%" y2="50%" pathLength="100" stroke-width="2" stroke="rgba(16,185,129,0.8)" class="imp3-line-flow" />
+                    </g>
+                    <!-- Bot Left -->
+                    <g>
+                        <line x1="25%" y1="78%" x2="50%" y2="50%" pathLength="100" stroke-width="2" stroke="rgba(16,185,129,0.25)" class="imp3-line-base" />
+                        <line x1="25%" y1="78%" x2="50%" y2="50%" pathLength="100" stroke-width="2" stroke="rgba(16,185,129,0.8)" class="imp3-line-flow" />
+                    </g>
+                    <!-- Bot Right -->
+                    <g>
+                        <line x1="75%" y1="78%" x2="50%" y2="50%" pathLength="100" stroke-width="2" stroke="rgba(16,185,129,0.25)" class="imp3-line-base" />
+                        <line x1="75%" y1="78%" x2="50%" y2="50%" pathLength="100" stroke-width="2" stroke="rgba(16,185,129,0.8)" class="imp3-line-flow" />
+                    </g>
+                </svg>
+
+                <!-- Center Hub -->
+                <div class="imp3-node imp3-center">
+                    <div class="imp3-center-main">GramCare<br>Impact</div>
+                    <div class="imp3-center-sub">System Core</div>
+                </div>
+
+                <!-- Top Left -->
+                <div class="imp3-node imp3-card imp3-top-left">
+                    <div class="imp3-card-title">ACCESS</div>
+                    <div class="imp3-card-desc">Specialist doctors without travel</div>
+                    <div class="imp3-card-tag">Remote consultation</div>
+                </div>
+
+                <!-- Top Right -->
+                <div class="imp3-node imp3-card imp3-top-right">
+                    <div class="imp3-card-title">EARLY CARE</div>
+                    <div class="imp3-card-desc">Early diagnosis reduces severe conditions</div>
+                    <div class="imp3-card-tag">Preventive healthcare</div>
+                </div>
+
+                <!-- Mid Left -->
+                <div class="imp3-node imp3-card imp3-mid-left">
+                    <div class="imp3-card-title">AFFORDABILITY</div>
+                    <div class="imp3-card-desc">Reduced travel cost and treatment delay</div>
+                    <div class="imp3-card-tag">Cost optimization</div>
+                </div>
+
+                <!-- Mid Right -->
+                <div class="imp3-node imp3-card imp3-mid-right">
+                    <div class="imp3-card-title">INCLUSIVITY</div>
+                    <div class="imp3-card-desc">Works without smartphones or digital literacy</div>
+                    <div class="imp3-card-tag">No tech barrier</div>
+                </div>
+
+                <!-- Bot Left -->
+                <div class="imp3-node imp3-card imp3-bot-left">
+                    <div class="imp3-card-title">EFFICIENCY</div>
+                    <div class="imp3-card-desc">Faster consultations and reduced waiting time</div>
+                    <div class="imp3-card-tag">Time saving</div>
+                </div>
+
+                <!-- Bot Right -->
+                <div class="imp3-node imp3-card imp3-bot-right">
+                    <div class="imp3-card-title">SYSTEM IMPROVEMENT</div>
+                    <div class="imp3-card-desc">Digital records, continuity, and reduced hospital load</div>
+                    <div class="imp3-card-tag">Scalable system</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Slide 7: Uniqueness & Benefits Title -->
+    <div class="slide" id="slide-uniqueness-title">
+        <div class="slide-content" style="align-items: center;">
+            <div class="cinematic-text">UNIQUENESS & FEATURES</div>
+        </div>
+    </div>
+
+    <!-- Slide 8: Uniqueness & Features Detailed -->
+    <div class="slide" id="slide-uniqueness">
+        <div class="uq-wrap">
+
+            <!-- TITLE -->
+            <div class="uq-title cinematic-title">
+                <h1>Uniqueness &amp; Features of <span style="color:#10B981">Gram</span><span style="color:#3B82F6">Care</span></h1>
+                <div class="uq-title-line"></div>
+            </div>
+
+            <!-- 3-COLUMN COMPARISON -->
+            <div class="uq-comparison">
+
+                <!-- LEFT (Dim - RED THEME) -->
+                <div class="uq-left">
+                    <div class="uq-left-header">Typical Telemedicine</div>
+                    <div class="uq-item">
+                        <div class="uq-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg></div>
+                        <span class="uq-text">Requires smartphone &amp; digital literacy</span>
+                    </div>
+                    <div class="uq-item">
+                        <div class="uq-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg></div>
+                        <span class="uq-text">Direct patient-to-doctor interaction</span>
+                    </div>
+                    <div class="uq-item">
+                        <div class="uq-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg></div>
+                        <span class="uq-text">No structured patient data</span>
+                    </div>
+                    <div class="uq-item">
+                        <div class="uq-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg></div>
+                        <span class="uq-text">No local support</span>
+                    </div>
+                </div>
+
+                <!-- CENTER DIVIDER -->
+                <div class="uq-center">
+                    <div class="uq-divider"></div>
+                    <div class="uq-vs">VS</div>
+                </div>
+
+                <!-- RIGHT (Dominant) -->
+                <div class="uq-right">
+                    <div class="uq-right-header">GramCare</div>
+                    <div class="uq-item">
+                        <div class="uq-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg></div>
+                        <span class="uq-text">Local center with community admin</span>
+                    </div>
+                    <div class="uq-item">
+                        <div class="uq-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line></svg></div>
+                        <span class="uq-text">No smartphone required</span>
+                    </div>
+                    <div class="uq-item">
+                        <div class="uq-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path></svg></div>
+                        <span class="uq-text">Structured patient data before consultation</span>
+                    </div>
+                    <div class="uq-item">
+                        <div class="uq-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
+                        <span class="uq-text">Multilingual assisted communication</span>
+                    </div>
+                    <div class="uq-item">
+                        <div class="uq-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><polyline points="9 11 12 14 22 4"></polyline></svg></div>
+                        <span class="uq-text">Guided consultation process</span>
+                    </div>
+                </div>
+
+            </div><!-- end uq-comparison -->
+
+            <!-- BOTTOM FEATURES -->
+            <div class="uq-features">
+                <div class="uq-features-label">Key Features</div>
+                <div class="uq-feature-row">
+                    <div class="uq-feature">
+                        <div class="uq-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg></div>
+                        <h4>Admin-assisted consultation</h4>
+                        <p>Local admins manage the full process</p>
+                    </div>
+                    <div class="uq-feature">
+                        <div class="uq-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg></div>
+                        <h4>Structured digital health forms</h4>
+                        <p>Doctors receive complete patient data</p>
+                    </div>
+                    <div class="uq-feature">
+                        <div class="uq-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg></div>
+                        <h4>Adaptive consultation</h4>
+                        <p>Works in low network (Video &#x2192; Audio &#x2192; Call)</p>
+                    </div>
+                    <div class="uq-feature">
+                        <div class="uq-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg></div>
+                        <h4>Multilingual support</h4>
+                        <p>Communication in local languages</p>
+                    </div>
+                    <div class="uq-feature">
+                        <div class="uq-feature-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"></path></svg></div>
+                        <h4>Digital health records</h4>
+                        <p>Better follow-ups and continuity</p>
+                    </div>
+                </div><!-- end uq-feature-row -->
+            </div><!-- end uq-features -->
+
+        </div><!-- end uq-wrap -->
+    </div><!-- end slide-uniqueness -->
+
+    <!-- Slide 9: Challenges Title -->
+    <div class="slide" id="slide-challenges-title">
+        <div class="slide-content" style="align-items: center;">
+            <div class="cinematic-text" style="color: #F59E0B; text-shadow: 0 0 40px rgba(245, 158, 11, 0.3);">CHALLENGES</div>
+        </div>
+    </div>
+
+    <!-- Slide: Network Challenges -->
+    <div class="slide" id="slide-network">
+        <div class="nc-wrap">
+
+            <!-- NETWORK STRENGTH INDICATOR (FIX 3) -->
+            <div class="nc-signal">
+                <div class="nc-signal-bars">
+                    <div class="nc-bar nc-bar-1"></div>
+                    <div class="nc-bar nc-bar-2"></div>
+                    <div class="nc-bar nc-bar-3"></div>
+                    <div class="nc-bar nc-bar-4"></div>
+                </div>
+                <div class="nc-signal-label">Network Strength</div>
+            </div>
+
+            <!-- TITLE -->
+            <div class="nc-title">
+                <h1>Handling <span>Network</span> Challenges</h1>
+                <p class="nc-subtitle">We adapt to the network, so care never stops.</p>
+                <div class="nc-title-line"></div>
+            </div>
+
+            <!-- MAIN SPLIT -->
+            <div class="nc-main">
+
+                <!-- LEFT: Problem -->
+                <div class="nc-left">
+                    <div class="nc-left-label">The Challenge</div>
+                    <div class="nc-left-title">Unstable Network<br>in Rural Areas</div>
+
+                    <div class="nc-problem-item">
+                        <div class="nc-problem-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><line x1="1" y1="1" x2="23" y2="23"></line><path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path><path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path><path d="M10.71 5.05A16 16 0 0 1 22.56 9"></path><path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg></div>
+                        <span class="nc-problem-text">Weak and fluctuating bandwidth</span>
+                    </div>
+                    <div class="nc-problem-item">
+                        <div class="nc-problem-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect><line x1="10" y1="10" x2="6" y2="14"></line><line x1="6" y1="10" x2="10" y2="14"></line></svg></div>
+                        <span class="nc-problem-text">Video calls frequently drop</span>
+                    </div>
+                    <div class="nc-problem-item">
+                        <div class="nc-problem-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg></div>
+                        <span class="nc-problem-text">Interrupted consultations</span>
+                    </div>
+                    <div class="nc-problem-item">
+                        <div class="nc-problem-icon"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></div>
+                        <span class="nc-problem-text">Risk of incomplete diagnosis</span>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Solution -->
+                <div class="nc-right">
+                    <div class="nc-right-label">The Solution</div>
+                    <div class="nc-right-title"><span>4-Level</span> Adaptive Consultation System</div>
+
+                    <div class="nc-levels">
+                        <!-- Level 1 -->
+                        <div class="nc-level nc-level-1">
+                            <div class="nc-level-icon">📹</div>
+                            <div class="nc-level-info">
+                                <div class="nc-level-num">Level 1</div>
+                                <div class="nc-level-name">HD VIDEO</div>
+                            </div>
+                            <div>
+                                <div class="nc-level-tag">Default Mode</div>
+                                <div class="nc-level-desc">Runs when network is strong · Smooth video</div>
+                            </div>
+                        </div>
+                        <!-- Level 2 -->
+                        <div class="nc-level nc-level-2">
+                            <div class="nc-level-icon">🎞️</div>
+                            <div class="nc-level-info">
+                                <div class="nc-level-num">Level 2</div>
+                                <div class="nc-level-name">SD VIDEO</div>
+                            </div>
+                            <div>
+                                <div class="nc-level-tag">Auto Downgrade</div>
+                                <div class="nc-level-desc">Reduces quality automatically · Stays stable</div>
+                            </div>
+                        </div>
+                        <!-- Level 3 -->
+                        <div class="nc-level nc-level-3">
+                            <div class="nc-level-icon">🎙️</div>
+                            <div class="nc-level-info">
+                                <div class="nc-level-num">Level 3</div>
+                                <div class="nc-level-name">AUDIO ONLY</div>
+                            </div>
+                            <div>
+                                <div class="nc-level-tag">Auto Protection</div>
+                                <div class="nc-level-desc">Video pauses · Audio continues · Saves bandwidth</div>
+                            </div>
+                        </div>
+                        <!-- Level 4 -->
+                        <div class="nc-level nc-level-4">
+                            <div class="nc-level-icon">📞</div>
+                            <div class="nc-level-info">
+                                <div class="nc-level-num">Level 4</div>
+                                <div class="nc-level-name">PHONE CALL (PSTN)</div>
+                            </div>
+                            <div>
+                                <div class="nc-level-tag">Rescue Mode</div>
+                                <div class="nc-level-desc">Switches to normal call · No internet needed</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Support text -->
+                    <div class="nc-support">
+                        <div class="nc-support-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg> Automatically adapts based on network strength</div>
+                        <div class="nc-support-item"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg> No consultation is ever lost</div>
+                    </div>
+                </div>
+
+            </div><!-- end nc-main -->
+
+            <!-- BOTTOM: Step flow -->
+            <div class="nc-flow">
+                <div class="nc-flow-title">What Happens During Network Drop</div>
+                <div class="nc-steps">
+
+                    <!-- Step 1 -->
+                    <div class="nc-step nc-step-1">
+                        <div class="nc-step-icon">
+                            <div class="nc-step-badge">1</div>
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><polygon points="23 7 16 12 23 17 23 7"></polygon><rect x="1" y="5" width="15" height="14" rx="2" ry="2"></rect></svg>
+                        </div>
+                        <div class="nc-step-label">Consultation starts</div>
+                        <div class="nc-step-desc">(Video works)</div>
+                    </div>
+
+                    <!-- Step 2 -->
+                    <div class="nc-step nc-step-2">
+                        <div class="nc-step-icon">
+                            <div class="nc-step-badge">2</div>
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#eab308" stroke-width="2"><path d="M5 12.55a11 11 0 0 1 14.08 0"></path><path d="M1.42 9a16 16 0 0 1 21.16 0"></path><path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path><line x1="12" y1="20" x2="12.01" y2="20"></line></svg>
+                        </div>
+                        <div class="nc-step-label">Network weakens</div>
+                        <div class="nc-step-desc">Video quality reduces (SD)</div>
+                    </div>
+
+                    <!-- Step 3 -->
+                    <div class="nc-step nc-step-3">
+                        <div class="nc-step-icon">
+                            <div class="nc-step-badge">3</div>
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#f97316" stroke-width="2"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line></svg>
+                        </div>
+                        <div class="nc-step-label">Further drop</div>
+                        <div class="nc-step-desc">Audio continues</div>
+                    </div>
+
+                    <!-- Step 4 -->
+                    <div class="nc-step nc-step-4">
+                        <div class="nc-step-icon">
+                            <div class="nc-step-badge">4</div>
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#ef4444" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.61 3.41 2 2 0 0 1 3.59 1h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.56a16 16 0 0 0 6 6l.91-.91a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                        </div>
+                        <div class="nc-step-label">Network fails</div>
+                        <div class="nc-step-desc">Call triggered (PSTN)</div>
+                    </div>
+
+                    <!-- Step 5 -->
+                    <div class="nc-step nc-step-5">
+                        <div class="nc-step-icon">
+                            <div class="nc-step-badge">5</div>
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#3B82F6" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+                        </div>
+                        <div class="nc-step-label">Consultation continues</div>
+                        <div class="nc-step-desc">Smoothly</div>
+                    </div>
+
+                    <!-- Step 6 -->
+                    <div class="nc-step nc-step-6">
+                        <div class="nc-step-icon">
+                            <div class="nc-step-badge">6</div>
+                            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#10B981" stroke-width="2"><polyline points="16 16 12 12 8 16"></polyline><line x1="12" y1="12" x2="12" y2="21"></line><path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"></path></svg>
+                        </div>
+                        <div class="nc-step-label">Network restores</div>
+                        <div class="nc-step-desc">Data syncs automatically</div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div><!-- end nc-wrap -->
+    </div><!-- end slide-network -->
+
+    <!-- Slide 10: Challenges Grid -->
+
+
+    <!-- Slide: System Architecture Title -->
+    <div class="slide" id="slide-8">
+        <div class="slide-content" style="align-items: center;">
+            <div class="cinematic-text" style="text-shadow: 0 0 40px rgba(59,130,246,0.35);">SYSTEM ARCHITECTURE</div>
+        </div>
+    </div>
+
+    <!-- Slide: System Architecture Diagram -->
+    <div class="slide" id="slide-sysarch">
+      <div class="sa3-wrapper">
+        <div class="sa3-header">
+          <h2 class="sa3-title">System Architecture <span>GramCare</span></h2>
+          <div class="sa3-subtitle">How the System Works — End to End</div>
+        </div>
+
+        <div class="sa3-body">
+          <!-- LEFT SIDE (PSTN) -->
+          <div class="sa3-side sa3-side-left">
+            <div class="sa3-node sa3-red">
+              <div class="sa3-emoji">📞</div>
+              <div class="sa3-name">PSTN Fallback</div>
+              <div class="sa3-sub">Call System</div>
+            </div>
+          </div>
+
+          <!-- CENTER GRID -->
+          <div class="sa3-center">
+            <!-- SVG Overlay -->
+            <svg class="sa3-svg" width="100%" height="100%">
+              <!-- User to App -->
+              <line x1="16.666%" y1="16.666%" x2="16.666%" y2="50%" stroke="rgba(16,185,129,0.3)" stroke-width="2" stroke-dasharray="4,4"/>
+              <line x1="50%" y1="16.666%" x2="50%" y2="50%" stroke="rgba(16,185,129,0.3)" stroke-width="2" stroke-dasharray="4,4"/>
+              <line x1="83.333%" y1="16.666%" x2="83.333%" y2="50%" stroke="rgba(16,185,129,0.3)" stroke-width="2" stroke-dasharray="4,4"/>
+
+              <!-- App to Bus -->
+              <line x1="16.666%" y1="50%" x2="16.666%" y2="66.666%" stroke="rgba(20,184,166,0.3)" stroke-width="2" stroke-dasharray="4,4"/>
+              <line x1="50%" y1="50%" x2="50%" y2="66.666%" stroke="rgba(20,184,166,0.3)" stroke-width="2" stroke-dasharray="4,4"/>
+              <line x1="83.333%" y1="50%" x2="83.333%" y2="66.666%" stroke="rgba(20,184,166,0.3)" stroke-width="2" stroke-dasharray="4,4"/>
+
+              <!-- Bus Horizontal (from 12.5% to 87.5%) -->
+              <line x1="12.5%" y1="66.666%" x2="87.5%" y2="66.666%" stroke="rgba(59,130,246,0.25)" stroke-width="2" stroke-dasharray="4,4"/>
+
+              <!-- Bus to Backend -->
+              <line x1="12.5%" y1="66.666%" x2="12.5%" y2="83.333%" stroke="rgba(59,130,246,0.5)" stroke-width="2"/>
+              <line x1="37.5%" y1="66.666%" x2="37.5%" y2="83.333%" stroke="rgba(59,130,246,0.5)" stroke-width="2"/>
+              <line x1="62.5%" y1="66.666%" x2="62.5%" y2="83.333%" stroke="rgba(59,130,246,0.5)" stroke-width="2"/>
+              <line x1="87.5%" y1="66.666%" x2="87.5%" y2="83.333%" stroke="rgba(59,130,246,0.5)" stroke-width="2"/>
+
+              <!-- PSTN (Left) to Network Engine (12.5%) -->
+              <line x1="-12%" y1="83.333%" x2="12.5%" y2="83.333%" stroke="rgba(239,68,68,0.4)" stroke-width="2" stroke-dasharray="4,4"/>
+
+              <!-- Sync Engine (87.5%) to Right Side -->
+              <line x1="87.5%" y1="83.333%" x2="95%" y2="83.333%" stroke="rgba(168,85,247,0.4)" stroke-width="2" stroke-dasharray="4,4"/>
+              <line x1="95%" y1="70%" x2="95%" y2="90%" stroke="rgba(168,85,247,0.4)" stroke-width="2" stroke-dasharray="4,4"/>
+              <line x1="95%" y1="70%" x2="112%" y2="70%" stroke="rgba(168,85,247,0.4)" stroke-width="2" stroke-dasharray="4,4"/>
+              <line x1="95%" y1="90%" x2="112%" y2="90%" stroke="rgba(168,85,247,0.4)" stroke-width="2" stroke-dasharray="4,4"/>
+
+              <!-- ANIMATED DOTS -->
+              <circle r="4" fill="#10B981">
+                <animate attributeName="cx" values="16.666%; 16.666%; 16.666%; 12.5%; 12.5%" keyTimes="0; 0.35; 0.55; 0.8; 1" dur="2.8s" repeatCount="indefinite" />
+                <animate attributeName="cy" values="16.666%; 50%; 66.666%; 66.666%; 83.333%" keyTimes="0; 0.35; 0.55; 0.8; 1" dur="2.8s" repeatCount="indefinite" />
+              </circle>
+
+              <circle r="4" fill="#3B82F6">
+                <animate attributeName="cx" values="83.333%; 83.333%; 83.333%; 37.5%; 37.5%" keyTimes="0; 0.35; 0.55; 0.8; 1" dur="3.2s" begin="1s" repeatCount="indefinite" />
+                <animate attributeName="cy" values="16.666%; 50%; 66.666%; 66.666%; 83.333%" keyTimes="0; 0.35; 0.55; 0.8; 1" dur="3.2s" begin="1s" repeatCount="indefinite" />
+              </circle>
+              
+              <circle r="3.5" fill="#ef4444" opacity="0.8">
+                <animate attributeName="cx" values="12.5%; -12%" dur="2s" begin="0.5s" repeatCount="indefinite" />
+                <animate attributeName="cy" values="83.333%; 83.333%" dur="2s" begin="0.5s" repeatCount="indefinite" />
+              </circle>
+            </svg>
+
+            <!-- ROW 1 -->
+            <div class="sa3-row">
+              <div class="sa3-label">USER LAYER</div>
+              <div class="sa3-col3">
+                <div class="sa3-node sa3-green">
+                  <div class="sa3-emoji">🧑</div>
+                  <div class="sa3-name">Patient (Rural)</div>
+                  <div class="sa3-sub">Community Member</div>
+                </div>
+              </div>
+              <div class="sa3-col3">
+                <div class="sa3-node sa3-green">
+                  <div class="sa3-emoji">🏥</div>
+                  <div class="sa3-name">Community Admin</div>
+                  <div class="sa3-sub">Local Health Centre</div>
+                </div>
+              </div>
+              <div class="sa3-col3">
+                <div class="sa3-node sa3-green">
+                  <div class="sa3-emoji">👨‍⚕️</div>
+                  <div class="sa3-name">Doctor (Urban)</div>
+                  <div class="sa3-sub">Remote Consultant</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ROW 2 -->
+            <div class="sa3-row">
+              <div class="sa3-label">APPLICATION LAYER</div>
+              <div class="sa3-col3">
+                <div class="sa3-node sa3-teal">
+                  <div class="sa3-emoji">📱</div>
+                  <div class="sa3-name">Local Health Center</div>
+                  <div class="sa3-sub">Patient Interface</div>
+                </div>
+              </div>
+              <div class="sa3-col3">
+                <div class="sa3-node sa3-teal">
+                  <div class="sa3-emoji">🖥️</div>
+                  <div class="sa3-name">Admin Dashboard</div>
+                  <div class="sa3-sub">Coordination Portal</div>
+                </div>
+              </div>
+              <div class="sa3-col3">
+                <div class="sa3-node sa3-teal">
+                  <div class="sa3-emoji">💊</div>
+                  <div class="sa3-name">Doctor Interface</div>
+                  <div class="sa3-sub">Consultation Portal</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ROW 3 -->
+            <div class="sa3-row">
+              <div class="sa3-label blue">BACKEND LAYER</div>
+              <div class="sa3-col4">
+                <div class="sa3-node sa3-blue">
+                  <div class="sa3-emoji">📡</div>
+                  <div class="sa3-name">Network Engine</div>
+                  <div class="sa3-sub">Adaptive Fallback</div>
+                </div>
+              </div>
+              <div class="sa3-col4">
+                <div class="sa3-node sa3-blue">
+                  <div class="sa3-emoji">⚙️</div>
+                  <div class="sa3-name">API Server</div>
+                  <div class="sa3-sub">Core Logic</div>
+                </div>
+              </div>
+              <div class="sa3-col4">
+                <div class="sa3-node sa3-blue">
+                  <div class="sa3-emoji">🗄️</div>
+                  <div class="sa3-name">Database</div>
+                  <div class="sa3-sub">Secure Storage</div>
+                </div>
+              </div>
+              <div class="sa3-col4">
+                <div class="sa3-node sa3-blue">
+                  <div class="sa3-emoji">🔄</div>
+                  <div class="sa3-name">Sync Engine</div>
+                  <div class="sa3-sub">Offline Recovery</div>
+                </div>
+              </div>
+            </div>
+
+          </div><!-- end center -->
+
+          <!-- RIGHT SIDE -->
+          <div class="sa3-side sa3-side-right">
+            <div class="sa3-node sa3-purple notif">
+              <div class="sa3-emoji">🔔</div>
+              <div class="sa3-name">Notification</div>
+              <div class="sa3-sub">Service</div>
+            </div>
+            <div class="sa3-node sa3-purple sync">
+              <div class="sa3-emoji">☁️</div>
+              <div class="sa3-name">Data Sync</div>
+              <div class="sa3-sub">Queue</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div><!-- end slide-sysarch -->
+
+
+    <!-- Slide 9: Tech Stack Title -->
+    <div class="slide" id="slide-9">
+        <div class="slide-content" style="align-items: center;">
+            <div class="cinematic-text">TECH STACK</div>
+        </div>
+    </div>
+
+    <!-- Slide 10: Technology Stack Diagram -->
+    <div class="slide" id="slide-10">
+      <div class="ts-wrapper">
+        <div class="ts-header">
+          <h2 class="ts-title">Technology Stack <span>GramCare</span></h2>
+          <div class="ts-subtitle">Core Infrastructure & Systems</div>
+        </div>
+
+        <div class="ts-body">
+          <!-- SVG Lines -->
+          <svg class="ts-svg">
+            <defs>
+              <filter id="ts-glow-g" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              <filter id="ts-glow-b" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+              <filter id="ts-glow-p" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+            </defs>
+
+            <!-- Top Line (Green) -->
+            <line x1="50%" y1="calc(50% - 110px)" x2="50%" y2="calc(15% + 75px)" pathLength="100" stroke-width="6" stroke="rgba(16,185,129,0.2)" class="ts-line" />
+            <line x1="50%" y1="calc(50% - 110px)" x2="50%" y2="calc(15% + 75px)" pathLength="100" stroke-width="2" stroke="#10B981" class="ts-line" />
+            
+            <!-- Bottom Line (Blue) -->
+            <line x1="50%" y1="calc(50% + 110px)" x2="50%" y2="calc(85% - 90px)" pathLength="100" stroke-width="6" stroke="rgba(59,130,246,0.2)" class="ts-line" />
+            <line x1="50%" y1="calc(50% + 110px)" x2="50%" y2="calc(85% - 90px)" pathLength="100" stroke-width="2" stroke="#3B82F6" class="ts-line" />
+            
+            <!-- Left Line (Blue) -->
+            <line x1="calc(50% - 110px)" y1="50%" x2="calc(17% + 135px)" y2="50%" pathLength="100" stroke-width="6" stroke="rgba(59,130,246,0.2)" class="ts-line" />
+            <line x1="calc(50% - 110px)" y1="50%" x2="calc(17% + 135px)" y2="50%" pathLength="100" stroke-width="2" stroke="#3B82F6" class="ts-line" />
+            
+            <!-- Right Line (Purple) -->
+            <line x1="calc(50% + 110px)" y1="50%" x2="calc(83% - 145px)" y2="50%" pathLength="100" stroke-width="6" stroke="rgba(168,85,247,0.3)" class="ts-line" />
+            <line x1="calc(50% + 110px)" y1="50%" x2="calc(83% - 145px)" y2="50%" pathLength="100" stroke-width="2" stroke="#A855F7" class="ts-line" />
+            
+            <!-- End Nodes Near Center -->
+            <g class="ts-end-nodes">
+              <circle cx="50%" cy="calc(50% - 110px)" r="4" fill="#10B981" filter="url(#ts-glow-g)"/>
+              <circle cx="50%" cy="calc(50% + 110px)" r="4" fill="#3B82F6" filter="url(#ts-glow-b)"/>
+              <circle cx="calc(50% - 110px)" cy="50%" r="4" fill="#3B82F6" filter="url(#ts-glow-b)"/>
+              <circle cx="calc(50% + 110px)" cy="50%" r="4" fill="#A855F7" filter="url(#ts-glow-p)"/>
+            </g>
+          </svg>
+
+          <!-- Center Hub -->
+          <div class="ts-node ts-center">
+            GramCare<br>System
+          </div>
+
+          <!-- Top: Frontend -->
+          <div class="ts-node ts-cluster ts-top">
+            <div class="ts-cluster-title ts-green-title">FRONTEND</div>
+            <div class="ts-item">React / Next.js</div>
+            <div class="ts-item">Tailwind CSS</div>
+          </div>
+
+          <!-- Left: Backend -->
+          <div class="ts-node ts-cluster ts-left">
+            <div class="ts-cluster-title ts-blue-title">BACKEND</div>
+            <div class="ts-item">Node.js / Express</div>
+            <div class="ts-item">REST APIs</div>
+          </div>
+
+          <!-- Right: Communication (Highlighted) -->
+          <div class="ts-node ts-cluster ts-right highlight">
+            <div class="ts-cluster-title ts-purple-title">COMMUNICATION ENGINE</div>
+            <div class="ts-item">WebRTC (video/audio)</div>
+            <div class="ts-item">Adaptive bitrate logic</div>
+            <div class="ts-item">PSTN fallback system</div>
+          </div>
+
+          <!-- Bottom: Data & Infra -->
+          <div class="ts-node ts-cluster ts-bottom">
+            <div class="ts-cluster-title ts-blue-title">DATA & INFRA</div>
+            <div class="ts-item">MongoDB / PostgreSQL</div>
+            <div class="ts-item">Cloud (AWS / Firebase)</div>
+            <div class="ts-item">Offline Sync Engine</div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
+    <!-- Slide 11: Conclusion Title -->
+    <div class="slide" id="slide-11">
+        <div class="slide-content" style="align-items: center;">
+            <div class="cinematic-text">CONCLUSION</div>
+        </div>
+    </div>
+
+    <!-- Slide 12: Final Conclusion -->
+    <div class="slide" id="slide-12">
+        <div class="conc-wrapper">
+            <div class="conc-label">CONCLUSION</div>
+            <h1 class="conc-main-text">
+                Transforming rural healthcare through <span class="conc-highlight">intelligent, accessible technology</span>
+            </h1>
+            <div class="conc-points">
+                <div class="conc-point">Bringing specialists closer to rural communities</div>
+                <div class="conc-point">Ensuring uninterrupted consultation in any condition</div>
+                <div class="conc-point">Building trust through local-first healthcare delivery</div>
+            </div>
+            <div class="conc-final">
+                GramCare is not just a platform — it’s a healthcare bridge
+            </div>
+            <div class="conc-thanks">
+                Thank You
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const slides = document.querySelectorAll('.slide');
+            let currentSlide = 0;
+
+            function showSlide(index) {
+                if (index < 0) index = 0;
+                if (index >= slides.length) index = slides.length - 1;
+                if (index === currentSlide && slides[index].classList.contains('active')) return;
+                
+                slides.forEach((slide, i) => {
+                    if (slide.classList.contains('active') && i !== index) {
+                        slide.classList.add('leaving-fade');
+                        setTimeout(() => {
+                            slide.classList.remove('active');
+                            slide.classList.remove('leaving-fade');
+                        }, 800);
+                    } else if (i !== index) {
+                        slide.classList.remove('active');
+                        slide.classList.remove('leaving-fade');
+                    }
+                });
+                
+                slides[index].classList.remove('leaving-fade');
+                void slides[index].offsetWidth;
+                
+                slides[index].classList.add('active');
+                currentSlide = index;
+            }
+
+            // Keyboard navigation
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'ArrowRight' || e.key === ' ') {
+                    showSlide(currentSlide + 1);
+                } else if (e.key === 'ArrowLeft') {
+                    showSlide(currentSlide - 1);
+                }
+            });
+
+
+
+            // Start button logic
+            const startBtn = document.getElementById('start-btn');
+            if (startBtn) {
+                startBtn.addEventListener('click', (e) => {
+                    const elem = document.documentElement;
+                    if (elem.requestFullscreen) {
+                        elem.requestFullscreen();
+                    } else if (elem.webkitRequestFullscreen) { /* Safari */
+                        elem.webkitRequestFullscreen();
+                    } else if (elem.msRequestFullscreen) { /* IE11 */
+                        elem.msRequestFullscreen();
+                    }
+                    showSlide(currentSlide + 1);
+                    e.stopPropagation();
+                });
+            }
+        });
+    </script>
+
+    <!-- WebGL Aurora Script -->
+    <script type="module">
+        import { Renderer, Program, Mesh, Color, Triangle, Vec2 } from 'https://unpkg.com/ogl@1.0.11/dist/index.mjs';
+
+        const container = document.getElementById('aurora-container');
+        if (container) {
+            const renderer = new Renderer({
+                alpha: true,
+                premultipliedAlpha: true,
+                antialias: true,
+                dpr: 2
+            });
+            const gl = renderer.gl;
+            container.appendChild(gl.canvas);
+            
+            gl.clearColor(0, 0, 0, 0);
+            gl.enable(gl.BLEND);
+            gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
+            gl.canvas.style.backgroundColor = 'transparent';
+
+            const geometry = new Triangle(gl);
+            if (geometry.attributes.uv) {
+                delete geometry.attributes.uv;
+            }
+
+            const vertex = `#version 300 es
+in vec2 position;
+void main() {
+  gl_Position = vec4(position, 0.0, 1.0);
+}
+`;
+
+            const fragment = `#version 300 es
+precision highp float;
+
+uniform float uTime;
+uniform float uAmplitude;
+uniform vec3 uColorStops[3];
+uniform vec2 uResolution;
+uniform float uBlend;
+
+out vec4 fragColor;
+
+vec3 permute(vec3 x) {
+  return mod(((x * 34.0) + 1.0) * x, 289.0);
+}
+
+float snoise(vec2 v){
+  const vec4 C = vec4(
+      0.211324865405187, 0.366025403784439,
+      -0.577350269189626, 0.024390243902439
+  );
+  vec2 i  = floor(v + dot(v, C.yy));
+  vec2 x0 = v - i + dot(i, C.xx);
+  vec2 i1 = (x0.x > x0.y) ? vec2(1.0, 0.0) : vec2(0.0, 1.0);
+  vec4 x12 = x0.xyxy + C.xxzz;
+  x12.xy -= i1;
+  i = mod(i, 289.0);
+
+  vec3 p = permute(
+      permute(i.y + vec3(0.0, i1.y, 1.0))
+    + i.x + vec3(0.0, i1.x, 1.0)
+  );
+
+  vec3 m = max(
+      0.5 - vec3(
+          dot(x0, x0),
+          dot(x12.xy, x12.xy),
+          dot(x12.zw, x12.zw)
+      ), 
+      0.0
+  );
+  m = m * m;
+  m = m * m;
+
+  vec3 x = 2.0 * fract(p * C.www) - 1.0;
+  vec3 h = abs(x) - 0.5;
+  vec3 ox = floor(x + 0.5);
+  vec3 a0 = x - ox;
+  m *= 1.79284291400159 - 0.85373472095314 * (a0*a0 + h*h);
+
+  vec3 g;
+  g.x  = a0.x  * x0.x  + h.x  * x0.y;
+  g.yz = a0.yz * x12.xz + h.yz * x12.yw;
+  return 130.0 * dot(m, g);
+}
+
+struct ColorStop {
+  vec3 color;
+  float position;
+};
+
+void main() {
+  vec2 uv = gl_FragCoord.xy / uResolution;
+  
+  ColorStop colors[3];
+  colors[0] = ColorStop(uColorStops[0], 0.0);
+  colors[1] = ColorStop(uColorStops[1], 0.5);
+  colors[2] = ColorStop(uColorStops[2], 1.0);
+  
+  // Inline COLOR_RAMP logic
+  vec3 rampColor;
+  int index = 0;
+  for (int i = 0; i < 2; i++) {
+     if (colors[i].position <= uv.x) index = i;
+  }
+  ColorStop currentColor = colors[index];
+  ColorStop nextColor = colors[index + 1];
+  float range = nextColor.position - currentColor.position;
+  float lerpFactor = (uv.x - currentColor.position) / range;
+  rampColor = mix(currentColor.color, nextColor.color, lerpFactor);
+  
+  float height = snoise(vec2(uv.x * 2.0 + uTime * 0.1, uTime * 0.25)) * 0.5 * uAmplitude;
+  height = exp(height);
+  height = (uv.y * 2.0 - height + 0.2);
+  float intensity = 0.6 * height;
+  
+  float midPoint = 0.20;
+  float auroraAlpha = smoothstep(midPoint - uBlend * 0.5, midPoint + uBlend * 0.5, intensity);
+  
+  vec3 auroraColor = intensity * rampColor;
+  
+  // Brightness adjustment for visibility
+  fragColor = vec4(auroraColor * auroraAlpha * 0.8, auroraAlpha * 0.8);
+}
+`;
+
+            const colorStopsHex = ["#7cff67","#B497CF","#5227FF"];
+            const colorStopsArray = colorStopsHex.map(hex => {
+                const c = new Color(hex);
+                return [c.r, c.g, c.b];
+            });
+
+            const program = new Program(gl, {
+                vertex,
+                fragment,
+                transparent: true,
+                uniforms: {
+                    uTime: { value: 0 },
+                    uAmplitude: { value: 1.0 },
+                    uColorStops: { value: colorStopsArray },
+                    uResolution: { value: [container.offsetWidth, container.offsetHeight] },
+                    uBlend: { value: 0.5 }
+                },
+            });
+
+            const mesh = new Mesh(gl, { geometry, program });
+
+            function resize() {
+                if (!container) return;
+                const width = container.offsetWidth;
+                const height = container.offsetHeight;
+                renderer.setSize(width, height);
+                if (program) {
+                    program.uniforms.uResolution.value = [width, height];
+                }
+            }
+            window.addEventListener('resize', resize, false);
+            resize();
+
+            // Animation Loop
+            requestAnimationFrame(update);
+            function update(t) {
+                requestAnimationFrame(update);
+                
+                // Render only if the slide is visible (Slide 6)
+                const slide6 = document.getElementById('slide-6');
+                if(slide6 && slide6.classList.contains('active')) {
+                    // Critical: re-calculate size if it was 0 (hidden) during init
+                    if (gl.canvas.width === 0 || gl.canvas.height === 0) {
+                        resize();
+                    }
+                    program.uniforms.uTime.value = t * 0.001 * 0.1;
+                    renderer.render({ scene: mesh });
+                }
+            }
+        }
+
+        // ==========================================
+        // DarkVeil Background for Start Screen
+        // ==========================================
+        const dvContainer = document.getElementById('darkveil-container');
+        if (dvContainer) {
+            const dvRenderer = new Renderer({
+                dpr: Math.min(window.devicePixelRatio, 2)
+            });
+            const dvGl = dvRenderer.gl;
+            dvContainer.appendChild(dvGl.canvas);
+            dvGl.canvas.style.width = '100%';
+            dvGl.canvas.style.height = '100%';
+            dvGl.canvas.style.display = 'block';
+
+            const dvGeometry = new Triangle(dvGl);
+
+            const dvVertex = `
+            attribute vec2 position;
+            void main(){gl_Position=vec4(position,0.0,1.0);}
+            `;
+
+            const dvFragment = `
+            #ifdef GL_ES
+            precision lowp float;
+            #endif
+            uniform vec2 uResolution;
+            uniform float uTime;
+            uniform float uHueShift;
+            uniform float uNoise;
+            uniform float uScan;
+            uniform float uScanFreq;
+            uniform float uWarp;
+            #define iTime uTime
+            #define iResolution uResolution
+
+            vec4 buf[8];
+            float rand(vec2 c){return fract(sin(dot(c,vec2(12.9898,78.233)))*43758.5453);}
+
+            mat3 rgb2yiq=mat3(0.299,0.587,0.114,0.596,-0.274,-0.322,0.211,-0.523,0.312);
+            mat3 yiq2rgb=mat3(1.0,0.956,0.621,1.0,-0.272,-0.647,1.0,-1.106,1.703);
+
+            vec3 hueShiftRGB(vec3 col,float deg){
+                vec3 yiq=rgb2yiq*col;
+                float rad=radians(deg);
+                float cosh=cos(rad),sinh=sin(rad);
+                vec3 yiqShift=vec3(yiq.x,yiq.y*cosh-yiq.z*sinh,yiq.y*sinh+yiq.z*cosh);
+                return clamp(yiq2rgb*yiqShift,0.0,1.0);
+            }
+
+            vec4 sigmoid(vec4 x){return 1./(1.+exp(-x));}
+
+            vec4 cppn_fn(vec2 coordinate,float in0,float in1,float in2){
+                buf[6]=vec4(coordinate.x,coordinate.y,0.3948333106474662+in0,0.36+in1);
+                buf[7]=vec4(0.14+in2,sqrt(coordinate.x*coordinate.x+coordinate.y*coordinate.y),0.,0.);
+                buf[0]=mat4(vec4(6.5404263,-3.6126034,0.7590882,-1.13613),vec4(2.4582713,3.1660357,1.2219609,0.06276096),vec4(-5.478085,-6.159632,1.8701609,-4.7742867),vec4(6.039214,-5.542865,-0.90925294,3.251348))*buf[6]+mat4(vec4(0.8473259,-5.722911,3.975766,1.6522468),vec4(-0.24321538,0.5839259,-1.7661959,-5.350116),vec4(0.,0.,0.,0.),vec4(0.,0.,0.,0.))*buf[7]+vec4(0.21808943,1.1243913,-1.7969975,5.0294676);
+                buf[1]=mat4(vec4(-3.3522482,-6.0612736,0.55641043,-4.4719114),vec4(0.8631464,1.7432913,5.643898,1.6106541),vec4(2.4941394,-3.5012043,1.7184316,6.357333),vec4(3.310376,8.209261,1.1355612,-1.165539))*buf[6]+mat4(vec4(5.24046,-13.034365,0.009859298,15.870829),vec4(2.987511,3.129433,-0.89023495,-1.6822904),vec4(0.,0.,0.,0.),vec4(0.,0.,0.,0.))*buf[7]+vec4(-5.9457836,-6.573602,-0.8812491,1.5436668);
+                buf[0]=sigmoid(buf[0]);buf[1]=sigmoid(buf[1]);
+                buf[2]=mat4(vec4(-15.219568,8.095543,-2.429353,-1.9381982),vec4(-5.951362,4.3115187,2.6393783,1.274315),vec4(-7.3145227,6.7297835,5.2473326,5.9411426),vec4(5.0796127,8.979051,-1.7278991,-1.158976))*buf[6]+mat4(vec4(-11.967154,-11.608155,6.1486754,11.237008),vec4(2.124141,-6.263192,-1.7050359,-0.7021966),vec4(0.,0.,0.,0.),vec4(0.,0.,0.,0.))*buf[7]+vec4(-4.17164,-3.2281182,-4.576417,-3.6401186);
+                buf[3]=mat4(vec4(3.1832156,-13.738922,1.879223,3.233465),vec4(0.64300746,12.768129,1.9141049,0.50990224),vec4(-0.049295485,4.4807224,1.4733979,1.801449),vec4(5.0039253,13.000481,3.3991797,-4.5561905))*buf[6]+mat4(vec4(-0.1285731,7.720628,-3.1425676,4.742367),vec4(0.6393625,3.714393,-0.8108378,-0.39174938),vec4(0.,0.,0.,0.),vec4(0.,0.,0.,0.))*buf[7]+vec4(-1.1811101,-21.621881,0.7851888,1.2329718);
+                buf[2]=sigmoid(buf[2]);buf[3]=sigmoid(buf[3]);
+                buf[4]=mat4(vec4(5.214916,-7.183024,2.7228765,2.6592617),vec4(-5.601878,-25.3591,4.067988,0.4602802),vec4(-10.57759,24.286327,21.102104,37.546658),vec4(4.3024497,-1.9625226,2.3458803,-1.372816))*buf[0]+mat4(vec4(-17.6526,-10.507558,2.2587414,12.462782),vec4(6.265566,-502.75443,-12.642513,0.9112289),vec4(-10.983244,20.741234,-9.701768,-0.7635988),vec4(5.383626,1.4819539,-4.1911616,-4.8444734))*buf[1]+mat4(vec4(12.785233,-16.345072,-0.39901125,1.7955981),vec4(-30.48365,-1.8345358,1.4542528,-1.1118771),vec4(19.872723,-7.337935,-42.941723,-98.52709),vec4(8.337645,-2.7312303,-2.2927687,-36.142323))*buf[2]+mat4(vec4(-16.298317,3.5471997,-0.44300047,-9.444417),vec4(57.5077,-35.609753,16.163465,-4.1534753),vec4(-0.07470326,-3.8656476,-7.0901804,3.1523974),vec4(-12.559385,-7.077619,1.490437,-0.8211543))*buf[3]+vec4(-7.67914,15.927437,1.3207729,-1.6686112);
+                buf[5]=mat4(vec4(-1.4109162,-0.372762,-3.770383,-21.367174),vec4(-6.2103205,-9.35908,0.92529047,8.82561),vec4(11.460242,-22.348068,13.625772,-18.693201),vec4(-0.3429052,-3.9905605,-2.4626114,-0.45033523))*buf[0]+mat4(vec4(7.3481627,-4.3661838,-6.3037653,-3.868115),vec4(1.5462853,6.5488915,1.9701879,-0.58291394),vec4(6.5858274,-2.2180402,3.7127688,-1.3730392),vec4(-5.7973905,10.134961,-2.3395722,-5.965605))*buf[1]+mat4(vec4(-2.5132585,-6.6685553,-1.4029363,-0.16285264),vec4(-0.37908727,0.53738135,4.389061,-1.3024765),vec4(-0.70647055,2.0111287,-5.1659346,-3.728635),vec4(-13.562562,10.487719,-0.9173751,-2.6487076))*buf[2]+mat4(vec4(-8.645013,6.5546675,-6.3944063,-5.5933375),vec4(-0.57783127,-1.077275,36.91025,5.736769),vec4(14.283112,3.7146652,7.1452246,-4.5958776),vec4(2.7192075,3.6021907,-4.366337,-2.3653464))*buf[3]+vec4(-5.9000807,-4.329569,1.2427121,8.59503);
+                buf[4]=sigmoid(buf[4]);buf[5]=sigmoid(buf[5]);
+                buf[6]=mat4(vec4(-1.61102,0.7970257,1.4675229,0.20917463),vec4(-28.793737,-7.1390953,1.5025433,4.656581),vec4(-10.94861,39.66238,0.74318546,-10.095605),vec4(-0.7229728,-1.5483948,0.7301322,2.1687684))*buf[0]+mat4(vec4(3.2547753,21.489103,-1.0194173,-3.3100595),vec4(-3.7316632,-3.3792162,-7.223193,-0.23685838),vec4(13.1804495,0.7916005,5.338587,5.687114),vec4(-4.167605,-17.798311,-6.815736,-1.6451967))*buf[1]+mat4(vec4(0.604885,-7.800309,-7.213122,-2.741014),vec4(-3.522382,-0.12359311,-0.5258442,0.43852118),vec4(9.6752825,-22.853785,2.062431,0.099892326),vec4(-4.3196306,-17.730087,2.5184598,5.30267))*buf[2]+mat4(vec4(-6.545563,-15.790176,-6.0438633,-5.415399),vec4(-43.591583,28.551912,-16.00161,18.84728),vec4(4.212382,8.394307,3.0958717,8.657522),vec4(-5.0237565,-4.450633,-4.4768,-5.5010443))*buf[3]+mat4(vec4(1.6985557,-67.05806,6.897715,1.9004834),vec4(1.8680354,2.3915145,2.5231109,4.081538),vec4(11.158006,1.7294737,2.0738268,7.386411),vec4(-4.256034,-306.24686,8.258898,-17.132736))*buf[4]+mat4(vec4(1.6889864,-4.5852966,3.8534803,-6.3482175),vec4(1.3543309,-1.2640043,9.932754,2.9079645),vec4(-5.2770967,0.07150358,-0.13962056,3.3269649),vec4(28.34703,-4.918278,6.1044083,4.085355))*buf[5]+vec4(6.6818056,12.522166,-3.7075126,-4.104386);
+                buf[7]=mat4(vec4(-8.265602,-4.7027016,5.098234,0.7509808),vec4(8.6507845,-17.15949,16.51939,-8.884479),vec4(-4.036479,-2.3946867,-2.6055532,-1.9866527),vec4(-2.2167742,-1.8135649,-5.9759874,4.8846445))*buf[0]+mat4(vec4(6.7790847,3.5076547,-2.8191125,-2.7028968),vec4(-5.743024,-0.27844876,1.4958696,-5.0517144),vec4(13.122226,15.735168,-2.9397483,-4.101023),vec4(-14.375265,-5.030483,-6.2599335,2.9848232))*buf[1]+mat4(vec4(4.0950394,-0.94011575,-5.674733,4.755022),vec4(4.3809423,4.8310084,1.7425908,-3.437416),vec4(2.117492,0.16342592,-104.56341,16.949184),vec4(-5.22543,-2.994248,3.8350096,-1.9364246))*buf[2]+mat4(vec4(-5.900337,1.7946124,-13.604192,-3.8060522),vec4(6.6583457,31.911177,25.164474,91.81147),vec4(11.840538,4.1503043,-0.7314397,6.768467),vec4(-6.3967767,4.034772,6.1714606,-0.32874924))*buf[3]+mat4(vec4(3.4992442,-196.91893,-8.923708,2.8142626),vec4(3.4806502,-3.1846354,5.1725626,5.1804223),vec4(-2.4009497,15.585794,1.2863957,2.0252278),vec4(-71.25271,-62.441242,-8.138444,0.50670296))*buf[4]+mat4(vec4(-12.291733,-11.176166,-7.3474145,4.390294),vec4(10.805477,5.6337385,-0.9385842,-4.7348723),vec4(-12.869276,-7.039391,5.3029537,7.5436664),vec4(1.4593618,8.91898,3.5101583,5.840625))*buf[5]+vec4(2.2415268,-6.705987,-0.98861027,-2.117676);
+                buf[6]=sigmoid(buf[6]);buf[7]=sigmoid(buf[7]);
+                buf[0]=mat4(vec4(1.6794263,1.3817469,2.9625452,0.),vec4(-1.8834411,-1.4806935,-3.5924516,0.),vec4(-1.3279216,-1.0918057,-2.3124623,0.),vec4(0.2662234,0.23235129,0.44178495,0.))*buf[0]+mat4(vec4(-0.6299101,-0.5945583,-0.9125601,0.),vec4(0.17828953,0.18300213,0.18182953,0.),vec4(-2.96544,-2.5819945,-4.9001055,0.),vec4(1.4195864,1.1868085,2.5176322,0.))*buf[1]+mat4(vec4(-1.2584374,-1.0552157,-2.1688404,0.),vec4(-0.7200217,-0.52666044,-1.438251,0.),vec4(0.15345335,0.15196142,0.272854,0.),vec4(0.945728,0.8861938,1.2766753,0.))*buf[2]+mat4(vec4(-2.4218085,-1.968602,-4.35166,0.),vec4(-22.683098,-18.0544,-41.954372,0.),vec4(0.63792,0.5470648,1.1078634,0.),vec4(-1.5489894,-1.3075932,-2.6444845,0.))*buf[3]+mat4(vec4(-0.49252132,-0.39877754,-0.91366625,0.),vec4(0.95609266,0.7923952,1.640221,0.),vec4(0.30616966,0.15693925,0.8639857,0.),vec4(1.1825981,0.94504964,2.176963,0.))*buf[4]+mat4(vec4(0.35446745,0.3293795,0.59547555,0.),vec4(-0.58784515,-0.48177817,-1.0614829,0.),vec4(2.5271258,1.9991658,4.6846647,0.),vec4(0.13042648,0.08864098,0.30187556,0.))*buf[5]+mat4(vec4(-1.7718065,-1.4033192,-3.3355875,0.),vec4(3.1664357,2.638297,5.378702,0.),vec4(-3.1724713,-2.6107926,-5.549295,0.),vec4(-2.851368,-2.249092,-5.3013067,0.))*buf[6]+mat4(vec4(1.5203838,1.2212278,2.8404984,0.),vec4(1.5210563,1.2651345,2.683903,0.),vec4(2.9789467,2.4364579,5.2347264,0.),vec4(2.2270417,1.8825914,3.8028636,0.))*buf[7]+vec4(-1.5468478,-3.6171484,0.24762098,0.);
+                buf[0]=sigmoid(buf[0]);
+                return vec4(buf[0].x,buf[0].y,buf[0].z,1.);
+            }
+
+            void mainImage(out vec4 fragColor,in vec2 fragCoord){
+                vec2 uv=fragCoord/uResolution.xy*2.-1.;
+                uv.y*=-1.;
+                uv+=uWarp*vec2(sin(uv.y*6.283+uTime*0.5),cos(uv.x*6.283+uTime*0.5))*0.05;
+                fragColor=cppn_fn(uv,0.1*sin(0.3*uTime),0.1*sin(0.69*uTime),0.1*sin(0.44*uTime));
+            }
+
+            void main(){
+                vec4 col;mainImage(col,gl_FragCoord.xy);
+                col.rgb=hueShiftRGB(col.rgb,uHueShift);
+                float scanline_val=sin(gl_FragCoord.y*uScanFreq)*0.5+0.5;
+                col.rgb*=1.-(scanline_val*scanline_val)*uScan;
+                col.rgb+=(rand(gl_FragCoord.xy+uTime)-0.5)*uNoise;
+                gl_FragColor=vec4(clamp(col.rgb,0.0,1.0),1.0);
+            }
+            `;
+
+            const dvProgram = new Program(dvGl, {
+                vertex: dvVertex,
+                fragment: dvFragment,
+                uniforms: {
+                    uTime: { value: 0 },
+                    uResolution: { value: new Vec2() },
+                    uHueShift: { value: 79 },
+                    uNoise: { value: 0 },
+                    uScan: { value: 0 },
+                    uScanFreq: { value: 0 },
+                    uWarp: { value: 0 }
+                }
+            });
+
+            const dvMesh = new Mesh(dvGl, { geometry: dvGeometry, program: dvProgram });
+
+            const dvResize = () => {
+                const w = dvContainer.clientWidth,
+                      h = dvContainer.clientHeight;
+                dvRenderer.setSize(w, h);
+                dvProgram.uniforms.uResolution.value.set(w, h);
+            };
+
+            window.addEventListener('resize', dvResize);
+            dvResize();
+
+            const dvStart = performance.now();
+            const dvSpeed = 2.1;
+
+            const dvLoop = () => {
+                const slideStart = document.getElementById('slide-start');
+                if (slideStart && slideStart.classList.contains('active')) {
+                    if (dvGl.canvas.width === 0 || dvGl.canvas.height === 0) {
+                        dvResize();
+                    }
+                    dvProgram.uniforms.uTime.value = ((performance.now() - dvStart) / 1000) * dvSpeed;
+                    dvRenderer.render({ scene: dvMesh });
+                }
+                requestAnimationFrame(dvLoop);
+            };
+
+            dvLoop();
+        }
+    </script>
+</body>
+</html>

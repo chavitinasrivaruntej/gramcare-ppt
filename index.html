@@ -160,8 +160,8 @@
         }
 
         .slide.active .cinematic-text {
-            animation: cinematicResolve 2.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-            animation-delay: 2.5s;
+            animation: cinematicResolve 2.0s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            animation-delay: 1s;
         }
         
         #slide-0.active .cinematic-text {
@@ -1759,8 +1759,8 @@
             text-align: center;
             flex-shrink: 0;
             opacity: 0;
-            margin-top: 40px;
-            margin-bottom: 0.3rem;
+            margin-top: 15px; /* Reduced to give more space */
+            margin-bottom: 0.5rem;
         }
         .nc-title h1 {
             font-family: 'Sora', sans-serif;
@@ -1781,15 +1781,14 @@
             background: linear-gradient(to right, #10B981, transparent);
             margin: 0.4rem auto 0;
         }
-        /* Main split — FIX 2 critical: cap height so nc-flow always gets space */
+        /* Main split - Flexible height to prevent overlap */
         .nc-main {
-            flex: 0 0 auto;
-            max-height: 54vh;
+            flex: 1;
             display: flex;
             gap: 1.5rem;
             min-height: 0;
             margin-top: 0.6rem;
-            overflow: hidden;
+            overflow: visible; /* Prevent box-shadow cropping */
         }
         /* Network strength indicator — FIX 3 */
         .nc-signal {
@@ -1833,8 +1832,8 @@
             flex-shrink: 0;
             display: flex;
             flex-direction: column;
-            justify-content: center;   /* FIX 6: vertically centered */
-            gap: 0.6rem;
+            justify-content: center;
+            gap: 0.8rem;
             opacity: 0;
             border-right: 1px solid rgba(239,68,68,0.2);
             padding-right: 1.5rem;
@@ -1887,11 +1886,11 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
-            align-items: center;
+            align-items: center; /* keep center, we will fix label alignment */
             gap: 0;
             opacity: 0;
             transform: translateX(20px);
-            padding: 10px 0;   /* reduced so flow section fits */
+            padding: 0;
         }
         .nc-right-label {
             font-size: 0.7rem;
@@ -1900,6 +1899,7 @@
             letter-spacing: 3px;
             color: #10B981;
             align-self: flex-start;
+            margin-left: 7.5%; /* Align with the 85% width nc-levels */
         }
         .nc-right-title {
             font-family: 'Sora', sans-serif;
@@ -1908,6 +1908,7 @@
             color: #fff;
             margin-bottom: 1.5rem;
             align-self: flex-start;
+            margin-left: 7.5%;
         }
         .nc-right-title span { color: #10B981; }
         /* Adaptive levels */

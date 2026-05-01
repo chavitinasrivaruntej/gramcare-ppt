@@ -143,6 +143,10 @@
             to { opacity: 1; transform: scale(1); }
         }
 
+        @keyframes fadeUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
         /* Cinematic Intro Slide */
         .cinematic-text {
             font-family: 'Sora', 'Inter', sans-serif;
@@ -156,7 +160,11 @@
         }
 
         .slide.active .cinematic-text {
-            animation: cinematicResolve 2.0s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            animation: cinematicResolve 2.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+            animation-delay: 2.5s;
+        }
+        
+        #slide-0.active .cinematic-text {
             animation-delay: 3s;
         }
 
@@ -2509,9 +2517,86 @@
             z-index: 0;
             opacity: 0.9;
         }
+        /* Global Navigation */
+        .nav-btn {
+            position: fixed;
+            bottom: 2rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: rgba(10, 15, 28, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 9999;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(5px);
+            opacity: 0.4;
+            display: none; /* controlled by js */
+        }
+        .nav-btn:hover {
+            opacity: 1;
+            background: rgba(16, 185, 129, 0.2);
+            border-color: rgba(16, 185, 129, 0.5);
+            box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+            transform: translateY(-2px);
+        }
+        .nav-btn svg {
+            fill: none;
+            stroke: currentColor;
+            transition: transform 0.3s ease;
+        }
+        .prev-btn:hover svg { transform: translateX(-2px); }
+        .next-btn:hover svg { transform: translateX(2px); }
+        .prev-btn { left: 2rem; }
+        .next-btn { right: 2rem; }
+
+        /* Stop Button */
+        .stop-btn {
+            margin-top: 3rem;
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.4);
+            color: #fca5a5;
+            padding: 0.8rem 2.5rem;
+            border-radius: 50px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 0;
+            pointer-events: auto;
+            position: relative;
+            z-index: 1000;
+        }
+        .stop-btn:hover {
+            background: rgba(239, 68, 68, 0.2);
+            box-shadow: 0 0 20px rgba(239, 68, 68, 0.3);
+            border-color: rgba(239, 68, 68, 0.6);
+            color: #ffffff;
+            transform: translateY(-2px);
+        }
+        #slide-12.active .stop-btn {
+            animation: concFadeIn 1s forwards 4s;
+        }
     </style>
 </head>
 <body>
+
+    <!-- Global Navigation -->
+    <button class="nav-btn prev-btn" id="prev-btn">
+        <svg viewBox="0 0 24 24" width="24" height="24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="15 18 9 12 15 6"></polyline>
+        </svg>
+    </button>
+    <button class="nav-btn next-btn" id="next-btn">
+        <svg viewBox="0 0 24 24" width="24" height="24" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="9 18 15 12 9 6"></polyline>
+        </svg>
+    </button>
 
     <!-- Slide -1: Start Screen -->
     <div class="slide active" id="slide-start">
@@ -3514,6 +3599,7 @@
             <div class="conc-thanks">
                 Thank You
             </div>
+            <button class="stop-btn" id="stop-btn">End Presentation</button>
         </div>
     </div>
 
@@ -3527,6 +3613,18 @@
                 if (index >= slides.length) index = slides.length - 1;
                 if (index === currentSlide && slides[index].classList.contains('active')) return;
                 
+                // Update navigation button visibility
+                const prevBtn = document.getElementById('prev-btn');
+                const nextBtn = document.getElementById('next-btn');
+                if (prevBtn && nextBtn) {
+                    if (index === 0) {
+                        prevBtn.style.display = 'none';
+                        nextBtn.style.display = 'none';
+                    } else {
+                        prevBtn.style.display = (index === 1) ? 'none' : 'flex';
+                        nextBtn.style.display = (index === slides.length - 1) ? 'none' : 'flex';
+                    }
+                }
                 slides.forEach((slide, i) => {
                     if (slide.classList.contains('active') && i !== index) {
                         slide.classList.add('leaving-fade');
@@ -3556,7 +3654,32 @@
                 }
             });
 
-
+            // Button navigation
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+            if (prevBtn) prevBtn.addEventListener('click', () => showSlide(currentSlide - 1));
+            if (nextBtn) nextBtn.addEventListener('click', () => showSlide(currentSlide + 1));
+            
+            const stopBtn = document.getElementById('stop-btn');
+            if (stopBtn) {
+                stopBtn.addEventListener('click', () => {
+                    try {
+                        if (document.fullscreenElement || document.webkitFullscreenElement || document.msFullscreenElement) {
+                            if (document.exitFullscreen) {
+                                document.exitFullscreen().catch(err => console.log(err));
+                            } else if (document.webkitExitFullscreen) {
+                                document.webkitExitFullscreen();
+                            } else if (document.msExitFullscreen) {
+                                document.msExitFullscreen();
+                            }
+                        } else {
+                            console.log("Not currently in fullscreen mode.");
+                        }
+                    } catch (e) {
+                        console.error('Error exiting fullscreen:', e);
+                    }
+                });
+            }
 
             // Start button logic
             const startBtn = document.getElementById('start-btn');
